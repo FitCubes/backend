@@ -1,0 +1,72 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002
+      author: senjar
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    primaryKeyName: pk_users
+              - column:
+                  name: first_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: password
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: gender
+                  type: varchar(10)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: age
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: height
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: current_weight
+                  type: double precision
+                  constraints:
+                    nullable: false
+              - column:
+                  name: target_weight
+                  type: double precision
+                  constraints:
+                    nullable: false
+              - column:
+                  name: activity_level
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: goal
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
