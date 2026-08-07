@@ -70,7 +70,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           source: "docker-compose-prod.yaml"
-          target: "/home/${{ secrets.SSH_USERNAME }}/docker-compose.yaml"
+          target: "/home/${{ secrets.SSH_USERNAME }}"
 
       - name: .env Deployment
         uses: appleboy/ssh-action@v1
@@ -98,5 +98,5 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd /home/${{ secrets.SSH_USERNAME }}
-            docker-compose down
-            docker-compose up -f docker-compose-prod.yaml -d --remove-orphans
+            docker compose down
+            docker compose up -f docker-compose-prod.yaml -d --remove-orphans
