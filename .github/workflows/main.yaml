@@ -1,6 +1,6 @@
 run-name: ${{ github.actor }} - ${{ github.ref_name }} ${{ github.sha }}
 
-name: backend worflow
+name: backend workflow
 
 on:
   push:
@@ -53,3 +53,50 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.REPOSITORY_NAME }}:${{ github.sha }}
+
+
+  deployment:
+    needs: build-docker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: SCP Deployment
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "docker-compose-prod.yaml"
+          target: "/home/${{ secrets.SSH_USERNAME }}/docker-compose.yaml"
+
+      - name: .env Deployment
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" > /home/${{ secrets.SSH_USERNAME }}/.env
+            echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> /home/${{ secrets.SSH_USERNAME }}/.env
+            echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> /home/${{ secrets.SSH_USERNAME }}/.env
+            echo "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" >> /home/${{ secrets.SSH_USERNAME }}/.env
+            echo "REDIS_PORT=${{ secrets.REDIS_PORT }}" >> /home/${{ secrets.SSH_USERNAME }}/.env
+            echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> /home/${{ secrets.SSH_USERNAME }}/.env
+            echo "REPOSITORY_NAME=${{ secrets.REPOSITORY_NAME }}" >> /home/${{ secrets.SSH_USERNAME }}/.env
+            echo "GITHUB_SHA=${{ github.sha }}" >> /home/${{ secrets.SSH_USERNAME }}/.env
+
+      - name: Docker Compose Deployment
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd /home/${{ secrets.SSH_USERNAME }}
+            docker-compose down
+            docker-compose up -f docker-compose-prod.yaml -d --remove-orphans
