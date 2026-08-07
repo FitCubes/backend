@@ -63,7 +63,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v6
 
-      - name: SCP Deployment
+      - name: Docker Compose push
         uses: appleboy/scp-action@v1
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -73,7 +73,7 @@ jobs:
           source: "docker-compose-prod.yaml"
           target: "/home/${{ secrets.SSH_USERNAME }}"
 
-      - name: .env Deployment
+      - name: .env push
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -90,7 +90,17 @@ jobs:
             echo "REPOSITORY_NAME=${{ secrets.REPOSITORY_NAME }}" >> /home/${{ secrets.SSH_USERNAME }}/.env
             echo "GITHUB_SHA=${{ github.sha }}" >> /home/${{ secrets.SSH_USERNAME }}/.env
 
-      - name: Docker Compose Deployment
+      - name: Nginx conf push
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "nginx.conf"
+          target: "/home/${{ secrets.SSH_USERNAME }}"
+
+      - name: Service Deployment
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.SSH_HOST }}
