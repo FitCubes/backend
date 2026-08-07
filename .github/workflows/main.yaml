@@ -53,7 +53,8 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.REPOSITORY_NAME }}:${{ github.sha }}
-
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   deployment:
     needs: build-docker
@@ -99,4 +100,4 @@ jobs:
           script: |
             cd /home/${{ secrets.SSH_USERNAME }}
             docker compose down
-            docker compose up -f docker-compose-prod.yaml -d --remove-orphans
+            docker compose -f docker-compose-prod.yaml up -d --remove-orphans
