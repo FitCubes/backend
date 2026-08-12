@@ -69,54 +69,11 @@ jobs:
     needs: build-docker
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v6
+      - name: Install AWS CLI
+        uses: chrislennon/action-aws-cli@v1.1
 
-      - name: Docker Compose push
-        uses: appleboy/scp-action@v1
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          source: "docker-compose-prod.yaml"
-          target: "/home/${{ secrets.SSH_USERNAME }}"
-
-      - name: .env push
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          script: |
-            echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" > /home/${{ secrets.SSH_USERNAME }}/.env
-            echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> /home/${{ secrets.SSH_USERNAME }}/.env
-            echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> /home/${{ secrets.SSH_USERNAME }}/.env
-            echo "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" >> /home/${{ secrets.SSH_USERNAME }}/.env
-            echo "REDIS_PORT=${{ secrets.REDIS_PORT }}" >> /home/${{ secrets.SSH_USERNAME }}/.env
-            echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> /home/${{ secrets.SSH_USERNAME }}/.env
-            echo "REPOSITORY_NAME=${{ secrets.REPOSITORY_NAME }}" >> /home/${{ secrets.SSH_USERNAME }}/.env
-            echo "GITHUB_SHA=${{ github.sha }}" >> /home/${{ secrets.SSH_USERNAME }}/.env
-
-      - name: Nginx conf push
-        uses: appleboy/scp-action@v1
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          source: "nginx.conf"
-          target: "/home/${{ secrets.SSH_USERNAME }}"
-
-      - name: Service Deployment
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          script: |
-            cd /home/${{ secrets.SSH_USERNAME }}
-            docker compose down
-            docker compose -f docker-compose-prod.yaml up -d --remove-orphans
+      - name: Refresh ASG
+        run: aws autoscaling start-instance-refresh --region eu-north-1 --auto-scaling-group-name fitcubes-asg
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
