@@ -1,8 +1,8 @@
 package fitcubes.dto.user;
 
-import fitcubes.model.ActivityLevel;
-import fitcubes.model.Gender;
-import fitcubes.model.Goal;
+import fitcubes.model.user.ActivityLevel;
+import fitcubes.model.user.Gender;
+import fitcubes.model.user.Goal;
 import fitcubes.validation.PasswordMatch;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;

@@ -1,4 +1,4 @@
-package fitcubes.model;
+package fitcubes.model.user;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

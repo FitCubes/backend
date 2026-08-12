@@ -8,7 +8,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import fitcubes.model.User;
+import fitcubes.model.user.User;
 import fitcubes.repository.UserRepository;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;

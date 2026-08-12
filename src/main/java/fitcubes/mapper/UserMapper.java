@@ -2,9 +2,9 @@ package fitcubes.mapper;
 
 import fitcubes.dto.user.UserDto;
 import fitcubes.dto.user.UserRegistrationRequestDto;
-import fitcubes.model.Role;
-import fitcubes.model.RoleName;
-import fitcubes.model.User;
+import fitcubes.model.user.Role;
+import fitcubes.model.user.RoleName;
+import fitcubes.model.user.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

@@ -5,6 +5,9 @@ import fitcubes.dto.user.UserLoginRequestDto;
 import fitcubes.dto.user.UserLoginResponseDto;
 import fitcubes.dto.user.UserRegistrationRequestDto;
 import fitcubes.security.AuthenticationService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,22 +21,55 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
+@Tag(name = "Authentication", description = "Endpoints for user authentication and registration")
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
+    @Operation(
+            summary = "Authenticate user",
+            description = "Authenticates user credentials and returns a JWT token.",
+            responses = {
+                    @ApiResponse(responseCode = "200",
+                            description = "User authenticated successfully"),
+                    @ApiResponse(responseCode = "400",
+                            description = "Invalid payload or validation error"),
+                    @ApiResponse(responseCode = "401",
+                            description = "Invalid credentials")
+            }
+    )
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
     public UserLoginResponseDto login(@RequestBody @Valid UserLoginRequestDto requestDto) {
         return authenticationService.login(requestDto);
     }
 
+    @Operation(
+            summary = "Register new user",
+            description = "Creates a new user account with default user role.",
+            responses = {
+                    @ApiResponse(responseCode = "201",
+                            description = "User registered successfully"),
+                    @ApiResponse(responseCode = "400",
+                            description = "Invalid payload or user already exists")
+            }
+    )
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto register(@RequestBody @Valid UserRegistrationRequestDto requestDto) {
         return authenticationService.register(requestDto);
     }
 
+    @Operation(
+            summary = "Logout user",
+            description = "Invalidates current user JWT token.",
+            responses = {
+                    @ApiResponse(responseCode = "204",
+                            description = "User logged out successfully"),
+                    @ApiResponse(responseCode = "401",
+                            description = "Unauthorized or missing token")
+            }
+    )
     @PostMapping("/logout")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void logout(@RequestHeader("Authorization") String authHeader) {

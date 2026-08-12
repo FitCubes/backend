@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - changeSet:
+      id: 005-fix-products-column-types
+      author: senjar
+      changes:
+        - modifyDataType:
+            tableName: products
+            columnName: fat
+            newDataType: float8
+        - modifyDataType:
+            tableName: products
+            columnName: protein
+            newDataType: float8
+        - modifyDataType:
+            tableName: products
+            columnName: carbohydrates
+            newDataType: float8
