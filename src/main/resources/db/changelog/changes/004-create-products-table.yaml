@@ -1,0 +1,44 @@
+databaseChangeLog:
+  - changeSet:
+        id: 004-create-products-table
+        author: senjar
+        changes:
+          - createTable:
+              tableName: products
+              columns:
+                - column:
+                    name: id
+                    type: bigint
+                    autoIncrement: true
+                    constraints:
+                      primaryKey: true
+                      nullable: false
+                      primaryKeyName: pk_products
+                - column:
+                    name: name
+                    type: varchar(255)
+                    constraints:
+                      nullable: false
+                - column:
+                    name: category
+                    type: varchar(255)
+                    constraints:
+                      nullable: false
+                - column:
+                    name: user_id
+                    type: bigint
+                    constraints:
+                      nullable: false
+                - column:
+                    name: calories
+                    type: bigint
+                - column:
+                    name: fat
+                    type: bigint
+                - column:
+                    name: carbohydrates
+                    type: bigint
+                - column:
+                    name: protein
+                    type: bigint
+

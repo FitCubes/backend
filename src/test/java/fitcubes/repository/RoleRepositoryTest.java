@@ -3,8 +3,8 @@ package fitcubes.repository;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import fitcubes.config.TestcontainersConfiguration;
-import fitcubes.model.Role;
-import fitcubes.model.RoleName;
+import fitcubes.model.user.Role;
+import fitcubes.model.user.RoleName;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

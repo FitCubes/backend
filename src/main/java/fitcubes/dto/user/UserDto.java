@@ -1,6 +1,6 @@
 package fitcubes.dto.user;
 
-import fitcubes.model.RoleName;
+import fitcubes.model.user.RoleName;
 import java.util.Set;
 
 public record UserDto(

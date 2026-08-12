@@ -1,4 +1,4 @@
-package fitcubes.model;
+package fitcubes.model.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

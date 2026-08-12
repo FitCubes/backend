@@ -3,9 +3,9 @@ package fitcubes.validation;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import fitcubes.dto.user.UserRegistrationRequestDto;
-import fitcubes.model.ActivityLevel;
-import fitcubes.model.Gender;
-import fitcubes.model.Goal;
+import fitcubes.model.user.ActivityLevel;
+import fitcubes.model.user.Gender;
+import fitcubes.model.user.Goal;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
