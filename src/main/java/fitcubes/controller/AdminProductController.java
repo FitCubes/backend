@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -47,6 +49,23 @@ public class AdminProductController {
     @PostMapping
     public ProductDto createProduct(@Valid @RequestBody CreateProductDto createProductDto) {
         return productService.saveAsAdmin(createProductDto);
+    }
+
+    @Operation(
+            summary = "Get all products (Admin)",
+            description = "Retrieves a paginated list of all products, "
+                    + "including both global and user-owned products.",
+            responses = {
+                    @ApiResponse(responseCode = "200",
+                            description = "Products retrieved successfully"),
+                    @ApiResponse(responseCode = "403",
+                            description = "Access denied: Admin role required")
+            }
+    )
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping
+    public Page<ProductDto> getAllProducts(Pageable pageable) {
+        return productService.getAllProductsAsAdmin(pageable);
     }
 
     @Operation(

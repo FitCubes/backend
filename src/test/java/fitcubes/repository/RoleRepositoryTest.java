@@ -23,7 +23,7 @@ public class RoleRepositoryTest {
 
     @Test
     @DisplayName("Should successfully retrieve a security role by its unique RoleName enum")
-    void findByNames_validName_returnsRole() {
+    void findByName_validName_returnsRole() {
         // GIVEN
         RoleName roleName = RoleName.USER;
 
