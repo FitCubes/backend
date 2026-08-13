@@ -3,8 +3,12 @@ package fitcubes.service;
 import fitcubes.dto.product.CreateProductDto;
 import fitcubes.dto.product.ProductDto;
 import fitcubes.dto.product.UpdateProductDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface ProductService {
+
+    // ----- User methods -----
 
     ProductDto save(CreateProductDto createProductDto, Long userId);
 
@@ -14,6 +18,10 @@ public interface ProductService {
 
     ProductDto update(UpdateProductDto updateProductDto, Long productId, Long userId);
 
+    Page<ProductDto> getAllProducts(Pageable pageable, Long userId);
+
+    // ----- Admin methods -----
+
     ProductDto getProductByIdAsAdmin(Long id);
 
     ProductDto saveAsAdmin(CreateProductDto createProductDto);
@@ -21,4 +29,6 @@ public interface ProductService {
     void deleteByIdAsAdmin(Long productId);
 
     ProductDto updateAsAdmin(UpdateProductDto updateProductDto, Long productId);
+
+    Page<ProductDto> getAllProductsAsAdmin(Pageable pageable);
 }

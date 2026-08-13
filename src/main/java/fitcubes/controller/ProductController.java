@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -48,6 +50,22 @@ public class ProductController {
     public ProductDto createProduct(@RequestBody @Valid CreateProductDto createProductDto,
                                     @AuthenticationPrincipal User user) {
         return productService.save(createProductDto, user.getId());
+    }
+
+    @Operation(
+            summary = "Get all products",
+            description = "Retrieves a paginated list of products. "
+                    + "Users can access both global products and their own custom products.",
+            responses = {
+                    @ApiResponse(responseCode = "200",
+                            description = "Products retrieved successfully")
+            }
+    )
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping
+    public Page<ProductDto> getAllProducts(Pageable pageable,
+                                           @AuthenticationPrincipal User user) {
+        return productService.getAllProducts(pageable, user.getId());
     }
 
     @Operation(

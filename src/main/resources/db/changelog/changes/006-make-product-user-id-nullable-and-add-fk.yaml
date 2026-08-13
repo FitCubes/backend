@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - changeSet:
+      id: 006-make-product-user-id-nullable-and-add-fk
+      author: senjar
+      changes:
+        - dropNotNullConstraint:
+            tableName: products
+            columnName: user_id
+            columnDataType: BIGINT
+
+        - addForeignKeyConstraint:
+            baseTableName: products
+            baseColumnNames: user_id
+            constraintName: fk_products_users
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - createIndex:
+            indexName: idx_products_user_id
+            tableName: products
+            columns:
+              - column:
+                  name: user_id
