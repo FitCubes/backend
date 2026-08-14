@@ -43,9 +43,9 @@ public class ProductServiceImpl implements ProductService {
     public void deleteById(Long productId, Long userId) {
         Product product = getProductByIdOrThrow(productId);
 
-        validateUserOwnership(product, userId, "delete");
+        validateIsOwner(product, userId);
 
-        productRepository.deleteById(productId);
+        productRepository.delete(product);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductDto update(UpdateProductDto updateProductDto, Long productId, Long userId) {
         Product product = getProductByIdOrThrow(productId);
 
-        validateUserOwnership(product, userId, "update");
+        validateIsOwner(product, userId);
 
         productMapper.updateProduct(updateProductDto, product);
         Product updatedProduct = productRepository.save(product);
@@ -73,10 +73,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductDto getProductById(Long productId, Long userId) {
         Product product = getProductByIdOrThrow(productId);
 
-        if (product.getUser() != null && !product.getUser().getId().equals(userId)) {
-            throw new AccessDeniedException("User with userId: " + userId
-                    + " is not allowed to access product with productId: " + productId);
-        }
+        validateCanAccess(product, userId);
 
         return productMapper.toDto(product);
     }
@@ -120,11 +117,20 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findAll(pageable).map(productMapper::toDto);
     }
 
-    private void validateUserOwnership(Product product, Long userId, String operation) {
+    private void validateCanAccess(Product product, Long userId) {
+        boolean isGlobal = product.getUser() == null;
+        boolean isOwner = !isGlobal && product.getUser().getId().equals(userId);
+
+        if (!isGlobal && !isOwner) {
+            throw new AccessDeniedException("User with userId: " + userId
+                    + " is not allowed to access product with productId: " + product.getId());
+        }
+    }
+
+    private void validateIsOwner(Product product, Long userId) {
         if (product.getUser() == null || !product.getUser().getId().equals(userId)) {
             throw new AccessDeniedException("User with userId: " + userId
-                    + " is not allowed to " + operation
-                    + " product with productId: " + product.getId());
+                    + " is not allowed to modify product with productId: " + product.getId());
         }
     }
 
