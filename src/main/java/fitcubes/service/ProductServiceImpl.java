@@ -78,45 +78,6 @@ public class ProductServiceImpl implements ProductService {
         return productMapper.toDto(product);
     }
 
-    @Override
-    @Transactional
-    public ProductDto saveAsAdmin(CreateProductDto createProductDto) {
-        Product product = productMapper.toEntity(createProductDto);
-        Product savedProduct = productRepository.save(product);
-        return productMapper.toDto(savedProduct);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public ProductDto getProductByIdAsAdmin(Long productId) {
-        Product product = getProductByIdOrThrow(productId);
-        return productMapper.toDto(product);
-    }
-
-    @Override
-    @Transactional
-    public void deleteByIdAsAdmin(Long productId) {
-        Product product = getProductByIdOrThrow(productId);
-
-        productRepository.delete(product);
-    }
-
-    @Override
-    @Transactional
-    public ProductDto updateAsAdmin(UpdateProductDto updateProductDto, Long productId) {
-        Product product = getProductByIdOrThrow(productId);
-
-        productMapper.updateProduct(updateProductDto, product);
-        Product updatedProduct = productRepository.save(product);
-        return productMapper.toDto(updatedProduct);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<ProductDto> getAllProductsAsAdmin(Pageable pageable) {
-        return productRepository.findAll(pageable).map(productMapper::toDto);
-    }
-
     private void validateCanAccess(Product product, Long userId) {
         boolean isGlobal = product.getUser() == null;
         boolean isOwner = !isGlobal && product.getUser().getId().equals(userId);

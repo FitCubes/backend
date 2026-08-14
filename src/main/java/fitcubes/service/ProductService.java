@@ -8,8 +8,6 @@ import org.springframework.data.domain.Pageable;
 
 public interface ProductService {
 
-    // ----- User methods -----
-
     ProductDto save(CreateProductDto createProductDto, Long userId);
 
     ProductDto getProductById(Long productId, Long userId);
@@ -20,15 +18,4 @@ public interface ProductService {
 
     Page<ProductDto> getAllProducts(Pageable pageable, Long userId);
 
-    // ----- Admin methods -----
-
-    ProductDto getProductByIdAsAdmin(Long id);
-
-    ProductDto saveAsAdmin(CreateProductDto createProductDto);
-
-    void deleteByIdAsAdmin(Long productId);
-
-    ProductDto updateAsAdmin(UpdateProductDto updateProductDto, Long productId);
-
-    Page<ProductDto> getAllProductsAsAdmin(Pageable pageable);
 }

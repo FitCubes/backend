@@ -9,7 +9,7 @@ import fitcubes.exception.EntityNotFoundException;
 import fitcubes.model.product.ProductCategory;
 import fitcubes.security.JwtUtil;
 import fitcubes.security.TokenBlacklistService;
-import fitcubes.service.ProductService;
+import fitcubes.service.AdminProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -55,7 +55,7 @@ class AdminProductControllerTest {
     private ObjectMapper objectMapper;
 
     @MockitoBean
-    private ProductService productService;
+    private AdminProductService adminProductService;
 
     @MockitoBean
     private JwtUtil jwtUtil;
@@ -86,7 +86,7 @@ class AdminProductControllerTest {
         @DisplayName("createProduct_asAdmin_returnsCreatedProduct")
         @WithMockUser(roles = "ADMIN")
         void createProduct_asAdmin_returnsCreatedProduct() throws Exception {
-            given(productService.saveAsAdmin(createProductDto)).willReturn(productDto);
+            given(adminProductService.save(createProductDto)).willReturn(productDto);
 
             mockMvc.perform(post(BASE_URL)
                             .with(csrf())
@@ -96,7 +96,7 @@ class AdminProductControllerTest {
                     .andExpect(jsonPath("$.id").value(PRODUCT_ID))
                     .andExpect(jsonPath("$.name").value("Rice"));
 
-            verify(productService).saveAsAdmin(createProductDto);
+            verify(adminProductService).save(createProductDto);
         }
 
         @Test
@@ -112,7 +112,7 @@ class AdminProductControllerTest {
                             .content(objectMapper.writeValueAsString(invalidDto)))
                     .andExpect(status().isBadRequest());
 
-            verify(productService, never()).saveAsAdmin(any());
+            verify(adminProductService, never()).save(any());
         }
 
         @Test
@@ -128,7 +128,7 @@ class AdminProductControllerTest {
                             .content(objectMapper.writeValueAsString(invalidDto)))
                     .andExpect(status().isBadRequest());
 
-            verify(productService, never()).saveAsAdmin(any());
+            verify(adminProductService, never()).save(any());
         }
 
         @Test
@@ -141,7 +141,7 @@ class AdminProductControllerTest {
                             .content(objectMapper.writeValueAsString(createProductDto)))
                     .andExpect(status().isForbidden());
 
-            verify(productService, never()).saveAsAdmin(any());
+            verify(adminProductService, never()).save(any());
         }
     }
 
@@ -154,7 +154,7 @@ class AdminProductControllerTest {
         @WithMockUser(roles = "ADMIN")
         void getAllProducts_asAdmin_returnsPage() throws Exception {
             Page<ProductDto> page = new PageImpl<>(List.of(productDto));
-            given(productService.getAllProductsAsAdmin(any(Pageable.class))).willReturn(page);
+            given(adminProductService.getAllProducts(any(Pageable.class))).willReturn(page);
 
             mockMvc.perform(get(BASE_URL))
                     .andExpect(status().isOk())
@@ -168,7 +168,7 @@ class AdminProductControllerTest {
             mockMvc.perform(get(BASE_URL))
                     .andExpect(status().isForbidden());
 
-            verify(productService, never()).getAllProductsAsAdmin(any());
+            verify(adminProductService, never()).getAllProducts(any());
         }
     }
 
@@ -180,7 +180,7 @@ class AdminProductControllerTest {
         @DisplayName("getProductById_asAdmin_returnsProduct")
         @WithMockUser(roles = "ADMIN")
         void getProductById_asAdmin_returnsProduct() throws Exception {
-            given(productService.getProductByIdAsAdmin(PRODUCT_ID)).willReturn(productDto);
+            given(adminProductService.getProductById(PRODUCT_ID)).willReturn(productDto);
 
             mockMvc.perform(get(BASE_URL + "/{productId}", PRODUCT_ID))
                     .andExpect(status().isOk())
@@ -191,7 +191,7 @@ class AdminProductControllerTest {
         @DisplayName("getProductById_notFound_returnsNotFound")
         @WithMockUser(roles = "ADMIN")
         void getProductById_notFound_returnsNotFound() throws Exception {
-            given(productService.getProductByIdAsAdmin(PRODUCT_ID))
+            given(adminProductService.getProductById(PRODUCT_ID))
                     .willThrow(new EntityNotFoundException(
                             "Product with productId: " + PRODUCT_ID + " not found"));
 
@@ -206,7 +206,7 @@ class AdminProductControllerTest {
             mockMvc.perform(get(BASE_URL + "/{productId}", PRODUCT_ID))
                     .andExpect(status().isForbidden());
 
-            verify(productService, never()).getProductByIdAsAdmin(anyLong());
+            verify(adminProductService, never()).getProductById(anyLong());
         }
     }
 
@@ -218,7 +218,7 @@ class AdminProductControllerTest {
         @DisplayName("updateProduct_asAdmin_returnsUpdatedProduct")
         @WithMockUser(roles = "ADMIN")
         void updateProduct_asAdmin_returnsUpdatedProduct() throws Exception {
-            given(productService.updateAsAdmin(updateProductDto, PRODUCT_ID)).willReturn(productDto);
+            given(adminProductService.update(updateProductDto, PRODUCT_ID)).willReturn(productDto);
 
             mockMvc.perform(patch(BASE_URL + "/{productId}", PRODUCT_ID)
                             .with(csrf())
@@ -227,14 +227,14 @@ class AdminProductControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.id").value(PRODUCT_ID));
 
-            verify(productService).updateAsAdmin(updateProductDto, PRODUCT_ID);
+            verify(adminProductService).update(updateProductDto, PRODUCT_ID);
         }
 
         @Test
         @DisplayName("updateProduct_notFound_returnsNotFound")
         @WithMockUser(roles = "ADMIN")
         void updateProduct_notFound_returnsNotFound() throws Exception {
-            given(productService.updateAsAdmin(updateProductDto, PRODUCT_ID))
+            given(adminProductService.update(updateProductDto, PRODUCT_ID))
                     .willThrow(new EntityNotFoundException(
                             "Product with productId: " + PRODUCT_ID + " not found"));
 
@@ -255,7 +255,7 @@ class AdminProductControllerTest {
                             .content(objectMapper.writeValueAsString(updateProductDto)))
                     .andExpect(status().isForbidden());
 
-            verify(productService, never()).updateAsAdmin(any(), anyLong());
+            verify(adminProductService, never()).update(any(), anyLong());
         }
     }
 
@@ -271,7 +271,7 @@ class AdminProductControllerTest {
                             .with(csrf()))
                     .andExpect(status().isNoContent());
 
-            verify(productService).deleteByIdAsAdmin(PRODUCT_ID);
+            verify(adminProductService).deleteById(PRODUCT_ID);
         }
 
         @Test
@@ -280,7 +280,7 @@ class AdminProductControllerTest {
         void deleteProduct_notFound_returnsNotFound() throws Exception {
             org.mockito.Mockito.doThrow(new EntityNotFoundException(
                             "Product with productId: " + PRODUCT_ID + " not found"))
-                    .when(productService).deleteByIdAsAdmin(PRODUCT_ID);
+                    .when(adminProductService).deleteById(PRODUCT_ID);
 
             mockMvc.perform(delete(BASE_URL + "/{productId}", PRODUCT_ID)
                             .with(csrf()))
@@ -295,7 +295,7 @@ class AdminProductControllerTest {
                             .with(csrf()))
                     .andExpect(status().isForbidden());
 
-            verify(productService, never()).deleteByIdAsAdmin(anyLong());
+            verify(adminProductService, never()).deleteById(anyLong());
         }
     }
 }
