@@ -133,7 +133,7 @@ class ProductServiceImplTest {
 
             productService.deleteById(PRODUCT_ID, USER_ID);
 
-            verify(productRepository).deleteById(PRODUCT_ID);
+            verify(productRepository).delete(product);
         }
 
         @Test
