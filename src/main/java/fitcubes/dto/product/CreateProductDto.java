@@ -14,15 +14,15 @@ public record CreateProductDto(
         ProductCategory category,
 
         @Min(value = 0, message = "Calories must be greater than or to 0")
-        int calories,
+        Integer calories,
 
         @Min(value = 0, message = "Fat must be greater than or to 0")
-        double fat,
+        Double fat,
 
         @Min(value = 0, message = "Carbohydrates must be greater than or to 0")
-        double carbohydrates,
+        Double carbohydrates,
 
         @Min(value = 0, message = "Protein must be greater than or to 0")
-        double protein
+        Double protein
 ) {
 }

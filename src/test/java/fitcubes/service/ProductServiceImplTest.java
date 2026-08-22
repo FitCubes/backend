@@ -11,6 +11,7 @@ import fitcubes.model.product.ProductCategory;
 import fitcubes.model.user.User;
 import fitcubes.repository.ProductRepository;
 import fitcubes.repository.UserRepository;
+import fitcubes.service.impl.ProductServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -67,7 +68,7 @@ class ProductServiceImplTest {
 
         createProductDto = new CreateProductDto(PRODUCT_NAME, CATEGORY, 100, 2.0, 15.0, 5.0);
         updateProductDto = new UpdateProductDto(PRODUCT_NAME, CATEGORY, 120, 3.0, 18.0, 6.0);
-        productDto = new ProductDto(PRODUCT_ID, PRODUCT_NAME, CATEGORY, 100, 2.0, 15.0, 5.0);
+        productDto = new ProductDto(PRODUCT_ID, PRODUCT_NAME, CATEGORY, 100, 2.0, 15.0, 5.0, 20.0);
     }
 
     private User createUser(Long id) {

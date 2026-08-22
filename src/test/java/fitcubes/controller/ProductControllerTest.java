@@ -106,7 +106,8 @@ public class ProductControllerTest {
                 130,
                 0.3,
                 28.0,
-                2.7
+                2.7,
+                10.8
         );
 
         user = new User();

@@ -50,16 +50,16 @@ public class User implements UserDetails {
     private Gender gender;
 
     @Column(name = "age", nullable = false)
-    private int age;
+    private Integer age;
 
     @Column(name = "height", nullable = false)
-    private int height;
+    private Integer height;
 
     @Column(name = "current_weight", nullable = false)
-    private double currentWeight;
+    private Double currentWeight;
 
     @Column(name = "target_weight", nullable = false)
-    private double targetWeight;
+    private Double targetWeight;
 
     @Column(name = "activity_level", nullable = false)
     @Enumerated(EnumType.STRING)

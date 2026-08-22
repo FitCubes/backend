@@ -75,7 +75,7 @@ class AdminProductControllerTest {
         ProductCategory category = ProductCategory.values()[0];
         createProductDto = new CreateProductDto("Rice", category, 130, 0.3, 28.0, 2.7);
         updateProductDto = new UpdateProductDto("Brown Rice", category, 140, 0.5, 29.0, 3.0);
-        productDto = new ProductDto(PRODUCT_ID, "Rice", category, 130, 0.3, 28.0, 2.7);
+        productDto = new ProductDto(PRODUCT_ID, "Rice", category, 130, 0.3, 28.0, 2.7, 10.8);
     }
 
     @Nested

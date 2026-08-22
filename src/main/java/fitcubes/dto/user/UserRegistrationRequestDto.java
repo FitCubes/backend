@@ -32,19 +32,19 @@ public record UserRegistrationRequestDto(
         Gender gender,
 
         @Min(value = 16, message = "Age must be greater than 16")
-        int age,
+        Integer age,
 
         @Min(value = 90, message = "Height must be greater than 90")
         @Max(value = 250, message = "Height must be less than 250")
-        int height,
+        Integer height,
 
         @Min(value = 30, message = "Weight must be greater than 30")
         @Max(value = 300, message = "Weight must be less than 300")
-        double currentWeight,
+        Double currentWeight,
 
         @Min(value = 30, message = "Target weight must be greater than 30")
         @Max(value = 300, message = "Target weight must be less than 300")
-        double targetWeight,
+        Double targetWeight,
 
         @NotNull(message = "Activity level cannot be null")
         ActivityLevel activityLevel,
