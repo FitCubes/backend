@@ -17,5 +17,4 @@ public interface ProductService {
     ProductDto update(UpdateProductDto updateProductDto, Long productId, Long userId);
 
     Page<ProductDto> getAllProducts(Pageable pageable, Long userId);
-
 }

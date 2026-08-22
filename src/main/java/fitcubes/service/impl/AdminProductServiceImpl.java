@@ -1,4 +1,4 @@
-package fitcubes.service;
+package fitcubes.service.impl;
 
 import fitcubes.dto.product.CreateProductDto;
 import fitcubes.dto.product.ProductDto;
@@ -7,6 +7,7 @@ import fitcubes.exception.EntityNotFoundException;
 import fitcubes.mapper.ProductMapper;
 import fitcubes.model.product.Product;
 import fitcubes.repository.ProductRepository;
+import fitcubes.service.AdminProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

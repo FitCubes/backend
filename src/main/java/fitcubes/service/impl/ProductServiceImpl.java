@@ -1,4 +1,4 @@
-package fitcubes.service;
+package fitcubes.service.impl;
 
 import fitcubes.dto.product.CreateProductDto;
 import fitcubes.dto.product.ProductDto;
@@ -10,6 +10,7 @@ import fitcubes.model.product.Product;
 import fitcubes.model.user.User;
 import fitcubes.repository.ProductRepository;
 import fitcubes.repository.UserRepository;
+import fitcubes.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

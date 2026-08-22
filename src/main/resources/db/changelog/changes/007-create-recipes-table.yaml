@@ -1,0 +1,71 @@
+databaseChangeLog:
+  - changeSet:
+      id: 007-create-recipes-table
+      author: senjars
+      changes:
+        - createTable:
+            tableName: recipes
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+                    foreignKeyName: fk_recipes_user
+                    referencedTableName: users
+                    referencedColumnNames: id
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: category
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: TEXT
+              - column:
+                  name: servings
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: raw_weight
+                  type: DOUBLE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: cooked_weight
+                  type: DOUBLE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: calories_per_100g
+                  type: DOUBLE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: protein_per_100g
+                  type: DOUBLE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: carbs_per_100g
+                  type: DOUBLE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: fats_per_100g
+                  type: DOUBLE
+                  constraints:
+                    nullable: false

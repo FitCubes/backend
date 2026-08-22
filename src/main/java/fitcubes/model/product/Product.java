@@ -37,15 +37,15 @@ public class Product {
     private User user;
 
     @Column(name = "calories", nullable = false)
-    private int calories;
+    private Integer calories;
 
     @Column(name = "fat", nullable = false)
-    private double fat;
+    private Double fat;
 
     @Column(name = "protein", nullable = false)
-    private double protein;
+    private Double protein;
 
     @Column(name = "carbohydrates", nullable = false)
-    private double carbohydrates;
+    private Double carbohydrates;
 
 }

@@ -1,0 +1,45 @@
+databaseChangeLog:
+  - changeSet:
+      id: 008-create-recipe-ingredients-table
+      author: senjars
+      changes:
+        - createTable:
+            tableName: recipe_ingredients
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: recipe_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_recipe_ingredients_recipe
+                    referencedTableName: recipes
+                    referencedColumnNames: id
+                    deleteCascade: true
+              - column:
+                  name: food_item_id
+                  type: BIGINT
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: weight
+                  type: DOUBLE
+              - column:
+                  name: calories_per_100g
+                  type: DOUBLE
+              - column:
+                  name: protein_per_100g
+                  type: DOUBLE
+              - column:
+                  name: carbs_per_100g
+                  type: DOUBLE
+              - column:
+                  name: fats_per_100g
+                  type: DOUBLE
