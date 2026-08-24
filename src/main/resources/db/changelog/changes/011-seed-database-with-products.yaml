@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - changeSet:
+      id: 011-seed-database-with-products
+      author: senjars
+      context: "!test"
+      changes:
+        - loadData:
+            tableName: products
+            file: "../data/products.csv"
+            relativeToChangelogFile: true
+            separator: ","
+            columns:
+              - column:
+                  header: "name"
+                  name: "name"
+                  type: "STRING"
+              - column:
+                  header: "category"
+                  name: "category"
+                  type: "STRING"
+              - column:
+                  header: "calories"
+                  name: "calories"
+                  type: "NUMERIC"
+              - column:
+                  header: "fat"
+                  name: "fat"
+                  type: "NUMERIC"
+              - column:
+                  header: "protein"
+                  name: "protein"
+                  type: "NUMERIC"
+              - column:
+                  header: "carbohydrates"
+                  name: "carbohydrates"
+                  type: "NUMERIC"

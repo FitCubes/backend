@@ -1,0 +1,29 @@
+databaseChangeLog:
+  - changeSet:
+      id: 010-seed-database-with-exercises
+      author: senjars
+      context: "!test"
+      changes:
+        - loadData:
+            tableName: exercises
+            file: "../data/exercises.csv"
+            relativeToChangelogFile: true
+            separator: ","
+            quotchar: '"'
+            columns:
+              - column:
+                  header: "Exercise"
+                  name: "name"
+                  type: "STRING"
+              - column:
+                  header: "MET"
+                  name: "met"
+                  type: "NUMERIC"
+              - column:
+                  header: "Primary Muscles"
+                  name: "primary_muscles"
+                  type: "STRING"
+              - column:
+                  header: "Category"
+                  name: "category"
+                  type: "STRING"
