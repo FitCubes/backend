@@ -1,0 +1,35 @@
+databaseChangeLog:
+  - changeSet:
+      id: 009-create-exercises-table
+      author: senjars
+      changes:
+        - createTable:
+            tableName: exercises
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                 name: name
+                 type: VARCHAR(255)
+                 constraints:
+                   nullable: false
+              - column:
+                  name: category
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: primary_muscles
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: met
+                  type: DECIMAL(4,2)
+                  constraints:
+                    nullable: false

@@ -15,3 +15,5 @@ databaseChangeLog:
       file: db/changelog/changes/007-create-recipes-table.yaml
   - include:
       file: db/changelog/changes/008-create-recipe-ingredients-table.yaml
+  - include:
+      file: db/changelog/changes/009-create-exercises-table.yaml
