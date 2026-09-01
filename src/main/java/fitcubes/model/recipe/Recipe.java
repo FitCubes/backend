@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -44,22 +45,34 @@ public class Recipe {
     private Integer servings;
 
     @Column(name = "raw_weight", nullable = false)
-    private Double rawWeight;
+    private BigDecimal rawWeight;
 
     @Column(name = "cooked_weight", nullable = false)
-    private Double cookedWeight;
+    private BigDecimal cookedWeight;
 
     @Column(name = "calories_per_100g", nullable = false)
-    private Double caloriesPer100g;
+    private BigDecimal caloriesPer100g;
 
     @Column(name = "protein_per_100g", nullable = false)
-    private Double proteinPer100g;
+    private BigDecimal proteinPer100g;
 
     @Column(name = "carbs_per_100g", nullable = false)
-    private Double carbsPer100g;
+    private BigDecimal carbsPer100g;
 
     @Column(name = "fats_per_100g", nullable = false)
-    private Double fatsPer100g;
+    private BigDecimal fatsPer100g;
+
+    @Column(name = "calories_per_serving", nullable = false)
+    private BigDecimal caloriesPerServing;
+
+    @Column(name = "protein_per_serving")
+    private BigDecimal proteinPerServing;
+
+    @Column(name = "carbs_per_serving")
+    private BigDecimal carbsPerServing;
+
+    @Column(name = "fats_per_serving")
+    private BigDecimal fatsPerServing;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecipeIngredient> ingredients = new ArrayList<>();

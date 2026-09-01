@@ -83,7 +83,7 @@ class ProductServiceImplTest {
         p.setUser(owner);
         p.setName(PRODUCT_NAME);
         p.setCategory(CATEGORY);
-        p.setCalories(100);
+        p.setCalories(100.0);
         p.setFat(2.0);
         p.setProtein(5.0);
         p.setCarbohydrates(15.0);

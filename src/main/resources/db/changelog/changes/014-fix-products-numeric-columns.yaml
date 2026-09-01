@@ -1,0 +1,38 @@
+databaseChangeLog:
+  - changeSet:
+      id: 014-fix-products-numeric-columns
+      author: senjars
+      changes:
+        - modifyDataType:
+            tableName: products
+            columnName: calories
+            newDataType: DOUBLE PRECISION
+        - modifyDataType:
+            tableName: products
+            columnName: fat
+            newDataType: DOUBLE PRECISION
+        - modifyDataType:
+            tableName: products
+            columnName: protein
+            newDataType: DOUBLE PRECISION
+        - modifyDataType:
+            tableName: products
+            columnName: carbohydrates
+            newDataType: DOUBLE PRECISION
+      rollback:
+        - modifyDataType:
+            tableName: products
+            columnName: calories
+            newDataType: BIGINT
+        - modifyDataType:
+            tableName: products
+            columnName: fat
+            newDataType: BIGINT
+        - modifyDataType:
+            tableName: products
+            columnName: protein
+            newDataType: BIGINT
+        - modifyDataType:
+            tableName: products
+            columnName: carbohydrates
+            newDataType: BIGINT

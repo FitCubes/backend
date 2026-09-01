@@ -136,7 +136,7 @@ class ProductRepositoryTest {
         product.setName(name);
         product.setCategory(category);
         product.setUser(user);
-        product.setCalories(100);
+        product.setCalories(100.0);
         product.setFat(2.0);
         product.setProtein(5.0);
         product.setCarbohydrates(15.0);

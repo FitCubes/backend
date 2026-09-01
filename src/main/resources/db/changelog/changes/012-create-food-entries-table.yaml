@@ -1,0 +1,112 @@
+databaseChangeLog:
+  - changeSet:
+      id: 012-create-food-entries-table
+      author: senjars
+      changes:
+        - createTable:
+            tableName: food_entries
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: source_type
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: product_id
+                  type: BIGINT
+              - column:
+                  name: recipe_id
+                  type: BIGINT
+              - column:
+                  name: name_snapshot
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: quantity
+                  type: NUMERIC
+                  constraints:
+                    nullable: false
+              - column:
+                  name: calories
+                  type: NUMERIC
+                  constraints:
+                    nullable: false
+              - column:
+                  name: protein
+                  type: NUMERIC
+              - column:
+                  name: carbs
+                  type: NUMERIC
+              - column:
+                  name: fat
+                  type: NUMERIC
+              - column:
+                  name: meal_type
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: logged_at
+                  type: TIMESTAMPTZ
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMPTZ
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMPTZ
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: food_entries
+            baseColumnNames: product_id
+            constraintName: fk_food_entries_product
+            referencedTableName: products
+            referencedColumnNames: id
+
+        - addForeignKeyConstraint:
+            baseTableName: food_entries
+            baseColumnNames: recipe_id
+            constraintName: fk_food_entries_recipe
+            referencedTableName: recipes
+            referencedColumnNames: id
+
+        - sql:
+            sql: >
+              ALTER TABLE food_entries
+              ADD CONSTRAINT chk_source_consistency CHECK (
+              (source_type = 'PRODUCT' AND product_id IS NOT NULL AND recipe_id IS NULL) OR
+              (source_type = 'RECIPE' AND recipe_id IS NOT NULL AND product_id IS NULL) OR
+              (source_type = 'CUSTOM' AND product_id IS NULL AND recipe_id IS NULL)
+              );
+
+        - createIndex:
+            tableName: food_entries
+            indexName: idx_food_entries_user_logged_at
+            columns:
+              - column:
+                  name: user_id
+              - column:
+                  name: logged_at
+
+      rollback:
+        - dropTable:
+            tableName: food_entries

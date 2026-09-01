@@ -18,6 +18,7 @@ import fitcubes.model.recipe.RecipeCategory;
 import fitcubes.model.user.User;
 import fitcubes.repository.RecipeRepository;
 import fitcubes.service.impl.AdminRecipeServiceImpl;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -89,12 +90,12 @@ public class AdminRecipeServiceImplTest {
         r.setCategory(CATEGORY);
         r.setDescription("Healthy breakfast");
         r.setServings(1);
-        r.setRawWeight(100.0);
-        r.setCookedWeight(250.0);
-        r.setCaloriesPer100g(150.0);
-        r.setProteinPer100g(6.0);
-        r.setCarbsPer100g(25.0);
-        r.setFatsPer100g(3.0);
+        r.setRawWeight(BigDecimal.valueOf(100.0));
+        r.setCookedWeight(BigDecimal.valueOf(250.0));
+        r.setCaloriesPer100g(BigDecimal.valueOf(150.0));
+        r.setProteinPer100g(BigDecimal.valueOf(6.0));
+        r.setCarbsPer100g(BigDecimal.valueOf(25.0));
+        r.setFatsPer100g(BigDecimal.valueOf(3.0));
         return r;
     }
 

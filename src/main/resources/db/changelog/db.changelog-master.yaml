@@ -21,3 +21,9 @@ databaseChangeLog:
       file: db/changelog/changes/010-seed-database-with-exercises.yaml
   - include:
       file: db/changelog/changes/011-seed-database-with-products.yaml
+  - include:
+      file: db/changelog/changes/012-create-food-entries-table.yaml
+  - include:
+      file: db/changelog/changes/013-alter-recipes-per-serving-column.yaml
+  - include:
+      file: db/changelog/changes/014-fix-products-numeric-columns.yaml
