@@ -17,10 +17,10 @@ public record UpdateRecipeDto(
         @Positive(message = "Servings must be at least 1")
         Integer servings,
 
-        @Positive(message = "Raw weight must be greater than zero")
+        @Positive(message = "Raw weightlog must be greater than zero")
         Double rawWeight,
 
-        @Positive(message = "Cooked weight must be greater than zero")
+        @Positive(message = "Cooked weightlog must be greater than zero")
         Double cookedWeight,
 
         @PositiveOrZero(message = "Calories cannot be negative")

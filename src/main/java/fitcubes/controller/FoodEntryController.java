@@ -3,7 +3,7 @@ package fitcubes.controller;
 import fitcubes.dto.foodentry.FoodEntryRequestDto;
 import fitcubes.dto.foodentry.FoodEntryResponseDto;
 import fitcubes.model.user.User;
-import fitcubes.service.FoodEntryService;
+import fitcubes.service.foodentry.FoodEntryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;

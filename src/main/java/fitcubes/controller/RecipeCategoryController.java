@@ -1,6 +1,6 @@
 package fitcubes.controller;
 
-import fitcubes.service.CategoryService;
+import fitcubes.service.product.CategoryService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -42,8 +42,8 @@ public record UserRegistrationRequestDto(
         @Max(value = 300, message = "Weight must be less than 300")
         Double currentWeight,
 
-        @Min(value = 30, message = "Target weight must be greater than 30")
-        @Max(value = 300, message = "Target weight must be less than 300")
+        @Min(value = 30, message = "Target weightlog must be greater than 30")
+        @Max(value = 300, message = "Target weightlog must be less than 300")
         Double targetWeight,
 
         @NotNull(message = "Activity level cannot be null")

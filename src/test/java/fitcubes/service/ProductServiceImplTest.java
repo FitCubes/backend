@@ -11,7 +11,7 @@ import fitcubes.model.product.ProductCategory;
 import fitcubes.model.user.User;
 import fitcubes.repository.ProductRepository;
 import fitcubes.repository.UserRepository;
-import fitcubes.service.impl.ProductServiceImpl;
+import fitcubes.service.product.impl.ProductServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

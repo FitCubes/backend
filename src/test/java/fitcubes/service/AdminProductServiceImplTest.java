@@ -17,7 +17,7 @@ import fitcubes.model.product.ProductCategory;
 import fitcubes.model.user.User;
 import fitcubes.repository.ProductRepository;
 import fitcubes.repository.UserRepository;
-import fitcubes.service.impl.AdminProductServiceImpl;
+import fitcubes.service.product.impl.AdminProductServiceImpl;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
