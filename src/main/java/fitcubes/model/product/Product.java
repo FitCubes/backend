@@ -37,7 +37,7 @@ public class Product {
     private User user;
 
     @Column(name = "calories", nullable = false)
-    private Integer calories;
+    private Double calories;
 
     @Column(name = "fat", nullable = false)
     private Double fat;

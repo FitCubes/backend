@@ -7,6 +7,7 @@ import fitcubes.model.user.ActivityLevel;
 import fitcubes.model.user.Gender;
 import fitcubes.model.user.Goal;
 import fitcubes.model.user.User;
+import java.math.BigDecimal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -176,12 +177,12 @@ class RecipeRepositoryTest {
         recipe.setName(name);
         recipe.setCategory(category);
         recipe.setServings(1);
-        recipe.setRawWeight(100.0);
-        recipe.setCookedWeight(100.0);
-        recipe.setCaloriesPer100g(100.0);
-        recipe.setProteinPer100g(10.0);
-        recipe.setCarbsPer100g(10.0);
-        recipe.setFatsPer100g(2.0);
+        recipe.setRawWeight(BigDecimal.valueOf(100.0));
+        recipe.setCookedWeight(BigDecimal.valueOf(100.0));
+        recipe.setCaloriesPer100g(BigDecimal.valueOf(100.0));
+        recipe.setProteinPer100g(BigDecimal.valueOf(10.0));
+        recipe.setCarbsPer100g(BigDecimal.valueOf(10.0));
+        recipe.setFatsPer100g(BigDecimal.valueOf(2.0));
         recipe.setUser(user);
         return entityManager.persist(recipe);
     }

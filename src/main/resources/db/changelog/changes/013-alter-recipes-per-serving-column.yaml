@@ -1,0 +1,87 @@
+databaseChangeLog:
+  - changeSet:
+      id: 013-alter-recipes-per-serving-column
+      author: senjars
+      changes:
+        - addColumn:
+            tableName: recipes
+            columns:
+              - column:
+                  name: calories_per_serving
+                  type: NUMERIC
+              - column:
+                  name: protein_per_serving
+                  type: NUMERIC
+              - column:
+                  name: carbs_per_serving
+                  type: NUMERIC
+              - column:
+                  name: fats_per_serving
+                  type: NUMERIC
+      rollback:
+        - dropColumn:
+            tableName: recipes
+            columnName: calories_per_serving
+        - dropColumn:
+            tableName: recipes
+            columnName: protein_per_serving
+        - dropColumn:
+            tableName: recipes
+            columnName: carbs_per_serving
+        - dropColumn:
+            tableName: recipes
+            columnName: fats_per_serving
+
+  - changeSet:
+      id: 003-convert-recipes-columns-to-numeric
+      author: fitcubes
+      changes:
+        - modifyDataType:
+            tableName: recipes
+            columnName: raw_weight
+            newDataType: NUMERIC
+        - modifyDataType:
+            tableName: recipes
+            columnName: cooked_weight
+            newDataType: NUMERIC
+        - modifyDataType:
+            tableName: recipes
+            columnName: calories_per_100g
+            newDataType: NUMERIC
+        - modifyDataType:
+            tableName: recipes
+            columnName: protein_per_100g
+            newDataType: NUMERIC
+        - modifyDataType:
+            tableName: recipes
+            columnName: carbs_per_100g
+            newDataType: NUMERIC
+        - modifyDataType:
+            tableName: recipes
+            columnName: fats_per_100g
+            newDataType: NUMERIC
+      rollback:
+        - modifyDataType:
+            tableName: recipes
+            columnName: raw_weight
+            newDataType: DOUBLE PRECISION
+        - modifyDataType:
+            tableName: recipes
+            columnName: cooked_weight
+            newDataType: DOUBLE PRECISION
+        - modifyDataType:
+            tableName: recipes
+            columnName: calories_per_100g
+            newDataType: DOUBLE PRECISION
+        - modifyDataType:
+            tableName: recipes
+            columnName: protein_per_100g
+            newDataType: DOUBLE PRECISION
+        - modifyDataType:
+            tableName: recipes
+            columnName: carbs_per_100g
+            newDataType: DOUBLE PRECISION
+        - modifyDataType:
+            tableName: recipes
+            columnName: fats_per_100g
+            newDataType: DOUBLE PRECISION
