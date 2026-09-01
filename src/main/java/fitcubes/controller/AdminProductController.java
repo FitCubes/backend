@@ -3,7 +3,7 @@ package fitcubes.controller;
 import fitcubes.dto.product.CreateProductDto;
 import fitcubes.dto.product.ProductDto;
 import fitcubes.dto.product.UpdateProductDto;
-import fitcubes.service.AdminProductService;
+import fitcubes.service.product.AdminProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;

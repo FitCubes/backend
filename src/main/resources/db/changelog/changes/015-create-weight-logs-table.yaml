@@ -1,0 +1,46 @@
+databaseChangeLog:
+  - changeSet:
+      id: 015-create-weightlog-logs-table
+      author: senjars
+      changes:
+        - createTable:
+            tableName: weight_logs
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: weight
+                  type: NUMERIC
+                  constraints:
+                    nullable: false
+              - column:
+                  name: logged_at
+                  type: TIMESTAMPTZ
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMPTZ
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+        - createIndex:
+            tableName: weight_logs
+            indexName: idx_weight_logs_user_logged_at
+            columns:
+              - column:
+                  name: user_id
+              - column:
+                  name: logged_at
+      rollback:
+        - dropTable:
+            tableName: weight_logs

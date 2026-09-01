@@ -1,0 +1,73 @@
+databaseChangeLog:
+  - changeSet:
+      id: 016-create-exercise-entries-table
+      author: senjars
+      changes:
+        - createTable:
+            tableName: exercise_entries
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: exercise_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name_snapshot
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: duration_minutes
+                  type: NUMERIC
+                  constraints:
+                    nullable: false
+              - column:
+                  name: calories_burned
+                  type: NUMERIC
+                  constraints:
+                    nullable: false
+              - column:
+                  name: logged_at
+                  type: TIMESTAMPTZ
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMPTZ
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMPTZ
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: exercise_entries
+            baseColumnNames: exercise_id
+            constraintName: fk_exercise_entries_exercise
+            referencedTableName: exercises
+            referencedColumnNames: id
+        - createIndex:
+            tableName: exercise_entries
+            indexName: idx_exercise_entries_user_logged_at
+            columns:
+              - column:
+                  name: user_id
+              - column:
+                  name: logged_at
+      rollback:
+        - dropTable:
+            tableName: exercise_entries

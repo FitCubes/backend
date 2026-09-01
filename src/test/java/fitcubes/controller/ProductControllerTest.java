@@ -27,7 +27,7 @@ import fitcubes.model.user.RoleName;
 import fitcubes.model.user.User;
 import fitcubes.security.JwtUtil;
 import fitcubes.security.TokenBlacklistService;
-import fitcubes.service.ProductService;
+import fitcubes.service.product.ProductService;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;

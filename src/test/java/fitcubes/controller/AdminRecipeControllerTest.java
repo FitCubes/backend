@@ -10,7 +10,7 @@ import fitcubes.exception.EntityNotFoundException;
 import fitcubes.model.recipe.RecipeCategory;
 import fitcubes.security.JwtUtil;
 import fitcubes.security.TokenBlacklistService;
-import fitcubes.service.AdminRecipeService;
+import fitcubes.service.recipe.AdminRecipeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

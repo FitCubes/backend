@@ -23,12 +23,12 @@ public record CreateRecipeDto(
         @Positive(message = "Servings must be at least 1")
         Integer servings,
 
-        @NotNull(message = "Raw weight is required")
-        @Positive(message = "Raw weight must be greater than zero")
+        @NotNull(message = "Raw weightlog is required")
+        @Positive(message = "Raw weightlog must be greater than zero")
         Double rawWeight,
 
-        @NotNull(message = "Cooked weight is required")
-        @Positive(message = "Cooked weight must be greater than zero")
+        @NotNull(message = "Cooked weightlog is required")
+        @Positive(message = "Cooked weightlog must be greater than zero")
         Double cookedWeight,
 
         @NotNull(message = "Calories per 100g is required")

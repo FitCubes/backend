@@ -12,7 +12,7 @@ import fitcubes.model.recipe.RecipeCategory;
 import fitcubes.model.user.User;
 import fitcubes.repository.RecipeRepository;
 import fitcubes.repository.UserRepository;
-import fitcubes.service.impl.RecipeServiceImpl;
+import fitcubes.service.recipe.impl.RecipeServiceImpl;
 import java.math.BigDecimal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

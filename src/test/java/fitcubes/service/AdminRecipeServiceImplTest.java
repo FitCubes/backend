@@ -17,7 +17,7 @@ import fitcubes.model.recipe.Recipe;
 import fitcubes.model.recipe.RecipeCategory;
 import fitcubes.model.user.User;
 import fitcubes.repository.RecipeRepository;
-import fitcubes.service.impl.AdminRecipeServiceImpl;
+import fitcubes.service.recipe.impl.AdminRecipeServiceImpl;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;

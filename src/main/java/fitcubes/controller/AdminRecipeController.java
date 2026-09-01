@@ -3,7 +3,7 @@ package fitcubes.controller;
 import fitcubes.dto.recipe.CreateRecipeDto;
 import fitcubes.dto.recipe.RecipeDto;
 import fitcubes.dto.recipe.UpdateRecipeDto;
-import fitcubes.service.AdminRecipeService;
+import fitcubes.service.recipe.AdminRecipeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;

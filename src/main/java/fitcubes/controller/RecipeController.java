@@ -4,7 +4,7 @@ import fitcubes.dto.recipe.CreateRecipeDto;
 import fitcubes.dto.recipe.RecipeDto;
 import fitcubes.dto.recipe.UpdateRecipeDto;
 import fitcubes.model.user.User;
-import fitcubes.service.RecipeService;
+import fitcubes.service.recipe.RecipeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;

@@ -22,7 +22,7 @@ import fitcubes.model.foodentry.SourceType;
 import fitcubes.model.user.User;
 import fitcubes.security.JwtUtil;
 import fitcubes.security.TokenBlacklistService;
-import fitcubes.service.FoodEntryService;
+import fitcubes.service.foodentry.FoodEntryService;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
