@@ -1,15 +1,10 @@
-package fitcubes;
+package fitcubes.integration;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import fitcubes.model.exercise.Exercise;
-import fitcubes.model.exercise.ExerciseCategory;
-import fitcubes.model.exerciseentry.ExerciseEntry;
 import fitcubes.model.foodentry.FoodEntry;
 import fitcubes.model.foodentry.MealType;
 import fitcubes.model.foodentry.SourceType;
@@ -26,6 +21,7 @@ import fitcubes.repository.ProductRepository;
 import fitcubes.repository.UserRepository;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +41,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @AutoConfigureMockMvc
 @Testcontainers
 @Transactional
-class DailySummaryIntegrationTest {
+class WeightPredictionIntegrationTest {
 
     @Container
     @ServiceConnection
@@ -53,9 +49,6 @@ class DailySummaryIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Autowired
     private UserRepository userRepository;
@@ -74,17 +67,17 @@ class DailySummaryIntegrationTest {
 
     private User saveUser() {
         User user = new User();
-        user.setEmail("dashboard-test@example.com");
-        user.setFirstName("Jan");
-        user.setLastName("Kowalski");
+        user.setEmail("prediction-test@example.com");
+        user.setFirstName("Tomasz");
+        user.setLastName("Wisniewski");
         user.setPassword("encoded-password");
         user.setGender(Gender.MALE);
-        user.setAge(30);
-        user.setHeight(180);
-        user.setCurrentWeight(80.0);
-        user.setTargetWeight(75.0);
-        user.setActivityLevel(ActivityLevel.MODERATELY_ACTIVE);
-        user.setGoal(Goal.MAINTENANCE);
+        user.setAge(35);
+        user.setHeight(178);
+        user.setCurrentWeight(85.0);
+        user.setTargetWeight(78.0);
+        user.setActivityLevel(ActivityLevel.SEDENTARY);
+        user.setGoal(Goal.WEIGHT_LOSS);
         return userRepository.save(user);
     }
 
@@ -95,86 +88,79 @@ class DailySummaryIntegrationTest {
         );
     }
 
-    private Product saveProduct() {
+    private Product saveProduct(double calories) {
         Product product = new Product();
-        product.setName("Chicken breast");
-        product.setCategory(ProductCategory.MEAT_AND_POULTRY);
-        product.setCalories(165.0);
-        product.setFat(3.6);
-        product.setProtein(31.0);
+        product.setName("Test food");
+        product.setCategory(ProductCategory.OTHER);
+        product.setCalories(calories);
+        product.setFat(0.0);
+        product.setProtein(0.0);
         product.setCarbohydrates(0.0);
         return productRepository.save(product);
     }
 
-    private Exercise saveExercise() {
-        Exercise exercise = new Exercise();
-        exercise.setName("Running");
-        exercise.setCategory(ExerciseCategory.CARDIO);
-        exercise.setPrimaryMuscles("Legs");
-        exercise.setMet(BigDecimal.valueOf(8));
-        return exerciseRepository.save(exercise);
+    private void saveFoodEntry(Long userId, Product product, double quantity, double calories,
+                               Instant loggedAt) {
+        FoodEntry entry = new FoodEntry();
+        entry.setUserId(userId);
+        entry.setSourceType(SourceType.PRODUCT);
+        entry.setProductId(product.getId());
+        entry.setNameSnapshot(product.getName());
+        entry.setQuantity(BigDecimal.valueOf(quantity));
+        entry.setCalories(BigDecimal.valueOf(calories));
+        entry.setMealType(MealType.LUNCH);
+        entry.setLoggedAt(loggedAt);
+        foodEntryRepository.save(entry);
     }
 
     @Test
-    void getDailySummary_withFoodAndExerciseEntries_returnsCorrectBalance() throws Exception {
+    void getPredictedWeeklyChange_withConsistentDeficit_returnsWeightLossPrediction()
+            throws Exception {
         User user = saveUser();
-        Product product = saveProduct();
-        Exercise exercise = saveExercise();
+        Product product = saveProduct(1000);
 
-        Instant loggedAt = Instant.now();
+        Instant now = Instant.now();
+        Instant from = now.minus(7, ChronoUnit.DAYS);
 
-        FoodEntry foodEntry = new FoodEntry();
-        foodEntry.setUserId(user.getId());
-        foodEntry.setSourceType(SourceType.PRODUCT);
-        foodEntry.setProductId(product.getId());
-        foodEntry.setNameSnapshot(product.getName());
-        foodEntry.setQuantity(BigDecimal.valueOf(2));
-        foodEntry.setCalories(BigDecimal.valueOf(330));
-        foodEntry.setMealType(MealType.LUNCH);
-        foodEntry.setLoggedAt(loggedAt);
-        foodEntryRepository.save(foodEntry);
+        for (int i = 0; i < 7; i++) {
+            saveFoodEntry(user.getId(), product, 1.651, 1651.0, now.minus(i, ChronoUnit.DAYS));
+        }
 
-        ExerciseEntry exerciseEntry = new ExerciseEntry();
-        exerciseEntry.setUserId(user.getId());
-        exerciseEntry.setExerciseId(exercise.getId());
-        exerciseEntry.setNameSnapshot(exercise.getName());
-        exerciseEntry.setDurationMinutes(BigDecimal.valueOf(30));
-        exerciseEntry.setCaloriesBurned(BigDecimal.valueOf(294));
-        exerciseEntry.setLoggedAt(loggedAt);
-        exerciseEntryRepository.save(exerciseEntry);
-
-        Instant from = loggedAt.minusSeconds(3600);
-        Instant to = loggedAt.plusSeconds(3600);
-
-        mockMvc.perform(get("/api/dashboard/daily-summary")
+        mockMvc.perform(get("/api/dashboard/predicted-weight-change")
                         .with(asUser(user))
                         .param("from", from.toString())
-                        .param("to", to.toString()))
+                        .param("to", now.toString()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.consumed").value(330.0))
-                .andExpect(jsonPath("$.burned").value(294.0));
+                .andExpect(jsonPath("$.averageDailyDeficit").exists())
+                .andExpect(jsonPath("$.predictedWeeklyChangeKg").exists());
     }
 
     @Test
-    void getDailySummary_noEntries_remainingEqualsTarget() throws Exception {
+    void getPredictedWeeklyChange_noEntries_predictsChangeBasedOnFullDeficit() throws Exception {
         User user = saveUser();
 
         Instant now = Instant.now();
-        Instant from = now.minusSeconds(3600);
-        Instant to = now.plusSeconds(3600);
+        Instant from = now.minus(7, ChronoUnit.DAYS);
 
-        String responseJson = mockMvc.perform(get("/api/dashboard/daily-summary")
+        String responseJson = mockMvc.perform(get("/api/dashboard/predicted-weight-change")
                         .with(asUser(user))
                         .param("from", from.toString())
-                        .param("to", to.toString()))
+                        .param("to", now.toString()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.consumed").value(0))
-                .andExpect(jsonPath("$.burned").value(0))
                 .andReturn().getResponse().getContentAsString();
 
-        double target = objectMapper.readTree(responseJson).get("targetCalories").asDouble();
-        double remaining = objectMapper.readTree(responseJson).get("remaining").asDouble();
+        org.assertj.core.api.Assertions.assertThat(responseJson).contains("predictedWeeklyChangeKg");
+    }
 
-        assertThat(remaining).isEqualTo(target);
+    @Test
+    void getPredictedWeeklyChange_invalidDateRange_returnsBadRequest() throws Exception {
+        User user = saveUser();
+        Instant now = Instant.now();
+
+        mockMvc.perform(get("/api/dashboard/predicted-weight-change")
+                        .with(asUser(user))
+                        .param("from", now.toString())
+                        .param("to", now.minus(1, ChronoUnit.DAYS).toString()))
+                .andExpect(status().isBadRequest());
     }
 }

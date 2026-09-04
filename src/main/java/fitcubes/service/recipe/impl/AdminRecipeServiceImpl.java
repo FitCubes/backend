@@ -9,6 +9,8 @@ import fitcubes.model.recipe.Recipe;
 import fitcubes.repository.RecipeRepository;
 import fitcubes.service.recipe.AdminRecipeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -41,6 +43,7 @@ public class AdminRecipeServiceImpl implements AdminRecipeService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "recipes", key = "#recipeId")
     public void deleteById(Long recipeId) {
         Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(
                 () -> new EntityNotFoundException("Not found"));
@@ -50,6 +53,7 @@ public class AdminRecipeServiceImpl implements AdminRecipeService {
 
     @Override
     @Transactional
+    @CachePut(value = "recipes", key = "#recipeId")
     public RecipeDto update(UpdateRecipeDto updateRecipeDto, Long recipeId) {
         Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(
                 () -> new EntityNotFoundException("Not found"));

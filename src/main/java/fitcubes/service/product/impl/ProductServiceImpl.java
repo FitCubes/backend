@@ -12,6 +12,7 @@ import fitcubes.repository.ProductRepository;
 import fitcubes.repository.UserRepository;
 import fitcubes.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "products", key = "#productId")
     public void deleteById(Long productId, Long userId) {
         Product product = getProductByIdOrThrow(productId);
 
@@ -51,6 +53,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "products", key = "#productId")
     public ProductDto update(UpdateProductDto updateProductDto, Long productId, Long userId) {
         Product product = getProductByIdOrThrow(productId);
 
