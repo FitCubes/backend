@@ -9,6 +9,8 @@ import fitcubes.model.product.Product;
 import fitcubes.repository.ProductRepository;
 import fitcubes.service.product.AdminProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -38,6 +40,7 @@ public class AdminProductServiceImpl implements AdminProductService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "products", key = "#productId")
     public void deleteById(Long productId) {
         Product product = getProductByIdOrThrow(productId);
 
@@ -46,6 +49,7 @@ public class AdminProductServiceImpl implements AdminProductService {
 
     @Override
     @Transactional
+    @CachePut(value = "products", key = "#productId")
     public ProductDto update(UpdateProductDto updateProductDto, Long productId) {
         Product product = getProductByIdOrThrow(productId);
 

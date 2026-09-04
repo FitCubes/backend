@@ -12,6 +12,7 @@ import fitcubes.repository.RecipeRepository;
 import fitcubes.repository.UserRepository;
 import fitcubes.service.recipe.RecipeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -51,6 +52,7 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "recipes", key = "#recipeId")
     public void deleteById(Long recipeId, Long userId) {
         Recipe recipe = getRecipeByIdOrThrow(recipeId);
 
@@ -61,6 +63,7 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "recipes", key = "#recipeId")
     public RecipeDto update(UpdateRecipeDto updateRecipeDto, Long recipeId, Long userId) {
         Recipe recipe = getRecipeByIdOrThrow(recipeId);
 
