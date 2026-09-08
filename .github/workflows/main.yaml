@@ -81,7 +81,7 @@ jobs:
 
     - name: Update SSM version
       run: |
-        aws ssm put-parameter --name "/fitcubes/backend/docker_sha" --region ${{ secrets.DOCKER_SHA_SSM_NAME }} --overwrite --value "${{ steps.docker-metadata.outputs.tags }}"
+        aws ssm put-parameter --name "${{ secrets.DOCKER_SHA_SSM_NAME }}" --region ${{ secrets.AWS_REGION }} --overwrite --value "${{ steps.docker-metadata.outputs.tags }}"
 
     - name: ASG Refresh
       run: aws autoscaling start-instance-refresh --region ${{ secrets.AWS_REGION }} --auto-scaling-group-name fitcubes-asg
