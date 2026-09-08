@@ -1,5 +1,4 @@
 run-name: ${{ github.actor }} - ${{ github.ref_name }} ${{ github.sha }}
-
 name: backend workflow
 
 on:
@@ -11,6 +10,9 @@ on:
       - main
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.actor }}-${{ github.ref_name }}
+  cancel-in-progress: true
 
 jobs:
   ci-test:
