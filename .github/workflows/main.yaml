@@ -79,5 +79,9 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
 
+    - name: Update SSM version
+      run: |
+        aws ssm put-parameter --name "/fitcubes/backend/docker_sha" --region ${{ secrets.DOCKER_SHA_SSM_NAME }} --overwrite --value "${{ steps.docker-metadata.outputs.tags }}"
+
     - name: ASG Refresh
-      run: aws autoscaling start-instance-refresh --region eu-north-1 --auto-scaling-group-name fitcubes-asg
+      run: aws autoscaling start-instance-refresh --region ${{ secrets.AWS_REGION }} --auto-scaling-group-name fitcubes-asg
