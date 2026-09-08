@@ -56,7 +56,7 @@ jobs:
           images: ${{ secrets.REPOSITORY_NAME }}
           tags: |
             type=raw,value=latest,enable=${{ github.ref_name == 'main' }}
-            type=sha,prefix=
+            type=raw,value=${{ github.sha }}
 
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v7
@@ -81,7 +81,7 @@ jobs:
 
     - name: Update SSM version
       run: |
-        aws ssm put-parameter --name "${{ secrets.DOCKER_SHA_SSM_NAME }}" --region ${{ secrets.AWS_REGION }} --overwrite --value "${{ steps.docker-metadata.outputs.tags }}"
+        aws ssm put-parameter --name "${{ secrets.DOCKER_SHA_SSM_NAME }}" --region ${{ secrets.AWS_REGION }} --overwrite --value "${{ github.sha }}"
 
     - name: ASG Refresh
       run: aws autoscaling start-instance-refresh --region ${{ secrets.AWS_REGION }} --auto-scaling-group-name fitcubes-asg
