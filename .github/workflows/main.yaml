@@ -84,6 +84,4 @@ jobs:
         aws ssm put-parameter --name "${{ secrets.DOCKER_SHA_SSM_NAME }}" --region ${{ secrets.AWS_REGION }} --overwrite --value "${{ github.sha }}"
 
     - name: ASG Refresh
-      run: |
-        aws autoscaling start-instance-refresh --region eu-north-1 --auto-scaling-group-name fitcubes-asg \
-        --preferences '{"MinHealthyPercentage":100,"MaxHealthyPercentage":200,"AutoRollback":true,"InstanceWarmup":300}'
+      run: aws autoscaling start-instance-refresh --region ${{ secrets.AWS_REGION }} --auto-scaling-group-name ${{ secrets.ASG_NAME }} --preferences '{"MinHealthyPercentage":100,"MaxHealthyPercentage":200}'
