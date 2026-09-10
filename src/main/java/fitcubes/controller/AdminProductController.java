@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 @PreAuthorize("hasRole('ADMIN')")
-@RequestMapping("/api/admin/products")
+@RequestMapping("/api/v1/admin/products")
 @Tag(name = "Admin Product Management",
         description = "Endpoints for managing global system products")
 public class AdminProductController {

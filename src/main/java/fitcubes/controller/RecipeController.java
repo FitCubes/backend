@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/recipes")
+@RequestMapping("/api/v1/recipes")
 @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 @Tag(name = "User Recipe Management",
         description = "Endpoints for managing user-owned custom recipes")

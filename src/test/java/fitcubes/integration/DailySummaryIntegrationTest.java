@@ -146,7 +146,7 @@ class DailySummaryIntegrationTest {
         Instant from = loggedAt.minusSeconds(3600);
         Instant to = loggedAt.plusSeconds(3600);
 
-        mockMvc.perform(get("/api/dashboard/daily-summary")
+        mockMvc.perform(get("/api/v1/dashboard/daily-summary")
                         .with(asUser(user))
                         .param("from", from.toString())
                         .param("to", to.toString()))
@@ -163,7 +163,7 @@ class DailySummaryIntegrationTest {
         Instant from = now.minusSeconds(3600);
         Instant to = now.plusSeconds(3600);
 
-        String responseJson = mockMvc.perform(get("/api/dashboard/daily-summary")
+        String responseJson = mockMvc.perform(get("/api/v1/dashboard/daily-summary")
                         .with(asUser(user))
                         .param("from", from.toString())
                         .param("to", to.toString()))

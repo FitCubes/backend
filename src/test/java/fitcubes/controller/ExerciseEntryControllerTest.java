@@ -92,7 +92,7 @@ class ExerciseEntryControllerTest {
     void addExerciseEntry_returnsCreated() throws Exception {
         when(exerciseEntryService.addExerciseEntry(eq(USER_ID), any())).thenReturn(responseDto());
 
-        mockMvc.perform(post("/api/exercise-entries")
+        mockMvc.perform(post("/api/v1/exercise-entries")
                         .with(csrf())
                         .with(asUser())
                         .contentType("application/json")
@@ -107,7 +107,7 @@ class ExerciseEntryControllerTest {
         ExerciseEntryRequestDto invalid = new ExerciseEntryRequestDto(
                 null, BigDecimal.valueOf(30), Instant.now());
 
-        mockMvc.perform(post("/api/exercise-entries")
+        mockMvc.perform(post("/api/v1/exercise-entries")
                         .with(csrf())
                         .with(asUser())
                         .contentType("application/json")
@@ -120,7 +120,7 @@ class ExerciseEntryControllerTest {
         ExerciseEntryRequestDto invalid = new ExerciseEntryRequestDto(
                 1L, BigDecimal.valueOf(-5), Instant.now());
 
-        mockMvc.perform(post("/api/exercise-entries")
+        mockMvc.perform(post("/api/v1/exercise-entries")
                         .with(csrf())
                         .with(asUser())
                         .contentType("application/json")
@@ -133,7 +133,7 @@ class ExerciseEntryControllerTest {
         when(exerciseEntryService.updateExerciseEntry(eq(USER_ID), eq(ENTRY_ID), any()))
                 .thenReturn(responseDto());
 
-        mockMvc.perform(patch("/api/exercise-entries/" + ENTRY_ID)
+        mockMvc.perform(patch("/api/v1/exercise-entries/" + ENTRY_ID)
                         .with(csrf())
                         .with(asUser())
                         .contentType("application/json")
@@ -147,7 +147,7 @@ class ExerciseEntryControllerTest {
         when(exerciseEntryService.updateExerciseEntry(eq(USER_ID), eq(999L), any()))
                 .thenThrow(new EntityNotFoundException("Exercise entry not found: 999"));
 
-        mockMvc.perform(patch("/api/exercise-entries/999")
+        mockMvc.perform(patch("/api/v1/exercise-entries/999")
                         .with(csrf())
                         .with(asUser())
                         .contentType("application/json")
@@ -157,7 +157,7 @@ class ExerciseEntryControllerTest {
 
     @Test
     void deleteExerciseEntry_returnsNoContent() throws Exception {
-        mockMvc.perform(delete("/api/exercise-entries/" + ENTRY_ID)
+        mockMvc.perform(delete("/api/v1/exercise-entries/" + ENTRY_ID)
                         .with(csrf())
                         .with(asUser()))
                 .andExpect(status().isNoContent());
@@ -169,7 +169,7 @@ class ExerciseEntryControllerTest {
     void getExerciseEntry_returnsOk() throws Exception {
         when(exerciseEntryService.getExerciseEntry(USER_ID, ENTRY_ID)).thenReturn(responseDto());
 
-        mockMvc.perform(get("/api/exercise-entries/" + ENTRY_ID).with(asUser()))
+        mockMvc.perform(get("/api/v1/exercise-entries/" + ENTRY_ID).with(asUser()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.nameSnapshot").value("Running"));
     }
@@ -182,7 +182,7 @@ class ExerciseEntryControllerTest {
         when(exerciseEntryService.getExerciseEntries(eq(USER_ID), any(), any(), any()))
                 .thenReturn(page);
 
-        mockMvc.perform(get("/api/exercise-entries")
+        mockMvc.perform(get("/api/v1/exercise-entries")
                         .with(asUser())
                         .param("from", "2026-08-01T00:00:00Z")
                         .param("to", "2026-08-31T23:59:59Z"))
@@ -192,7 +192,7 @@ class ExerciseEntryControllerTest {
 
     @Test
     void unauthenticated_returns401Or403() throws Exception {
-        mockMvc.perform(get("/api/exercise-entries")
+        mockMvc.perform(get("/api/v1/exercise-entries")
                         .param("from", "2026-08-01T00:00:00Z")
                         .param("to", "2026-08-31T23:59:59Z"))
                 .andExpect(status().is4xxClientError());

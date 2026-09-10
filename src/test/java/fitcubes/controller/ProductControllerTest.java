@@ -50,7 +50,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @Import(TestSecurityConfig.class)
 public class ProductControllerTest {
 
-    private static final String BASE_URL = "/api/products";
+    private static final String BASE_URL = "/api/v1/products";
     private static final Long PRODUCT_ID = 10L;
     private static final Long USER_ID = 1L;
 

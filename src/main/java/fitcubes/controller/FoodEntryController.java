@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/food-entries")
+@RequestMapping("/api/v1/food-entries")
 @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 @Tag(name = "Food Entry Management",
         description = "Endpoints for managing user's food log entries")

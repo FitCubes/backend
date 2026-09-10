@@ -36,36 +36,36 @@ public class User implements UserDetails {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "first_name", nullable = false)
+    @Column(name = "first_name")
     private String firstName;
 
-    @Column(name = "last_name", nullable = false)
+    @Column(name = "last_name")
     private String lastName;
 
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "gender", nullable = false)
+    @Column(name = "gender")
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @Column(name = "age", nullable = false)
+    @Column(name = "age")
     private Integer age;
 
-    @Column(name = "height", nullable = false)
+    @Column(name = "height")
     private Integer height;
 
-    @Column(name = "current_weight", nullable = false)
+    @Column(name = "current_weight")
     private Double currentWeight;
 
-    @Column(name = "target_weight", nullable = false)
+    @Column(name = "target_weight")
     private Double targetWeight;
 
-    @Column(name = "activity_level", nullable = false)
+    @Column(name = "activity_level")
     @Enumerated(EnumType.STRING)
     private ActivityLevel activityLevel;
 
-    @Column(name = "goal", nullable = false)
+    @Column(name = "goal")
     @Enumerated(EnumType.STRING)
     private Goal goal;
 

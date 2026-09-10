@@ -3,24 +3,10 @@ package fitcubes.dto.user;
 import fitcubes.model.user.ActivityLevel;
 import fitcubes.model.user.Gender;
 import fitcubes.model.user.Goal;
-import fitcubes.validation.PasswordMatch;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 
-@PasswordMatch
-public record UserRegistrationRequestDto(
-        @Email
-        @NotBlank(message = "Email cannot be null")
-        String email,
-
-        @NotBlank(message = "Password cannot be null")
-        String password,
-
-        @NotBlank(message = "Repeated password cannot be null")
-        String repeatedPassword,
-
+public record UserProfileUpdateRequestDto(
         String firstName,
 
         String lastName,
@@ -38,8 +24,8 @@ public record UserRegistrationRequestDto(
         @Max(value = 300, message = "Weight must be less than 300")
         Double currentWeight,
 
-        @Min(value = 30, message = "Target weightlog must be greater than 30")
-        @Max(value = 300, message = "Target weightlog must be less than 300")
+        @Min(value = 30, message = "Target weight must be greater than 30")
+        @Max(value = 300, message = "Target weight must be less than 300")
         Double targetWeight,
 
         ActivityLevel activityLevel,

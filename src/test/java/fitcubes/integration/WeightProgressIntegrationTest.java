@@ -89,7 +89,7 @@ class WeightProgressIntegrationTest {
         saveWeightLog(user.getId(), 72.0, now.minus(15, ChronoUnit.DAYS));
         saveWeightLog(user.getId(), 70.0, now);
 
-        mockMvc.perform(get("/api/weight-logs/progress").with(asUser(user)))
+        mockMvc.perform(get("/api/v1/weight-logs/progress").with(asUser(user)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.startingWeight").value(74.0))
                 .andExpect(jsonPath("$.currentWeight").value(70.0))
@@ -102,7 +102,7 @@ class WeightProgressIntegrationTest {
     void getWeightProgress_noHistory_fallsBackToCurrentWeight() throws Exception {
         User user = saveUser();
 
-        mockMvc.perform(get("/api/weight-logs/progress").with(asUser(user)))
+        mockMvc.perform(get("/api/v1/weight-logs/progress").with(asUser(user)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.startingWeight").value(70.0))
                 .andExpect(jsonPath("$.currentWeight").value(70.0))
@@ -120,7 +120,7 @@ class WeightProgressIntegrationTest {
                 "{\"weight\": 71.5, \"loggedAt\": \"%s\"}", now.toString());
 
         mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-                        .post("/api/weight-logs")
+                        .post("/api/v1/weight-logs")
                         .with(org.springframework.security.test.web.servlet.request
                                 .SecurityMockMvcRequestPostProcessors.csrf())
                         .with(asUser(user))
@@ -128,7 +128,7 @@ class WeightProgressIntegrationTest {
                         .content(requestBody))
                 .andExpect(status().isCreated());
 
-        mockMvc.perform(get("/api/weight-logs/progress").with(asUser(user)))
+        mockMvc.perform(get("/api/v1/weight-logs/progress").with(asUser(user)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.currentWeight").value(71.5))
                 .andExpect(jsonPath("$.totalChange").value(-2.5));
