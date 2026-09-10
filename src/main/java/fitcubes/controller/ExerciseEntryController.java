@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/exercise-entries")
+@RequestMapping("/api/v1/exercise-entries")
 @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 public class ExerciseEntryController {
 

@@ -1,0 +1,41 @@
+databaseChangeLog:
+  - changeSet:
+      id: 017-alter-users-table
+      author: senjars
+      changes:
+        - dropNotNullConstraint:
+            tableName: users
+            columnName: first_name
+            columnDataType: varchar(255)
+        - dropNotNullConstraint:
+            tableName: users
+            columnName: last_name
+            columnDataType: varchar(255)
+        - dropNotNullConstraint:
+            tableName: users
+            columnName: gender
+            columnDataType: varchar(255)
+        - dropNotNullConstraint:
+            tableName: users
+            columnName: age
+            columnDataType: integer
+        - dropNotNullConstraint:
+            tableName: users
+            columnName: height
+            columnDataType: integer
+        - dropNotNullConstraint:
+            tableName: users
+            columnName: current_weight
+            columnDataType: double precision
+        - dropNotNullConstraint:
+            tableName: users
+            columnName: target_weight
+            columnDataType: double precision
+        - dropNotNullConstraint:
+            tableName: users
+            columnName: activity_level
+            columnDataType: varchar(255)
+        - dropNotNullConstraint:
+            tableName: users
+            columnName: goal
+            columnDataType: varchar(255)

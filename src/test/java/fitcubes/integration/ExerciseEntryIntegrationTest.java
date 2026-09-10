@@ -107,7 +107,7 @@ class ExerciseEntryIntegrationTest {
         ExerciseEntryRequestDto request = new ExerciseEntryRequestDto(
                 running.getId(), BigDecimal.valueOf(30), Instant.now());
 
-        String responseJson = mockMvc.perform(post("/api/exercise-entries")
+        String responseJson = mockMvc.perform(post("/api/v1/exercise-entries")
                         .with(csrf())
                         .with(asUser())
                         .contentType("application/json")
@@ -132,7 +132,7 @@ class ExerciseEntryIntegrationTest {
         WeightLogRequestDto weightRequest = new WeightLogRequestDto(
                 BigDecimal.valueOf(75), Instant.now());
 
-        mockMvc.perform(post("/api/weight-logs")
+        mockMvc.perform(post("/api/v1/weight-logs")
                         .with(csrf())
                         .with(asUser())
                         .contentType("application/json")
@@ -143,7 +143,7 @@ class ExerciseEntryIntegrationTest {
         ExerciseEntryRequestDto exerciseRequest = new ExerciseEntryRequestDto(
                 cycling.getId(), BigDecimal.valueOf(45), Instant.now());
 
-        mockMvc.perform(post("/api/exercise-entries")
+        mockMvc.perform(post("/api/v1/exercise-entries")
                         .with(csrf())
                         .with(asUser())
                         .contentType("application/json")
@@ -157,7 +157,7 @@ class ExerciseEntryIntegrationTest {
         ExerciseEntryRequestDto request = new ExerciseEntryRequestDto(
                 999999L, BigDecimal.valueOf(30), Instant.now());
 
-        mockMvc.perform(post("/api/exercise-entries")
+        mockMvc.perform(post("/api/v1/exercise-entries")
                         .with(csrf())
                         .with(asUser())
                         .contentType("application/json")
@@ -173,7 +173,7 @@ class ExerciseEntryIntegrationTest {
         ExerciseEntryRequestDto createRequest = new ExerciseEntryRequestDto(
                 running.getId(), BigDecimal.valueOf(30), Instant.now());
 
-        String createResponse = mockMvc.perform(post("/api/exercise-entries")
+        String createResponse = mockMvc.perform(post("/api/v1/exercise-entries")
                         .with(csrf())
                         .with(asUser())
                         .contentType("application/json")
@@ -186,7 +186,7 @@ class ExerciseEntryIntegrationTest {
         ExerciseEntryRequestDto updateRequest = new ExerciseEntryRequestDto(
                 running.getId(), BigDecimal.valueOf(60), Instant.now());
 
-        mockMvc.perform(patch("/api/exercise-entries/" + entryId)
+        mockMvc.perform(patch("/api/v1/exercise-entries/" + entryId)
                         .with(csrf())
                         .with(asUser())
                         .contentType("application/json")
@@ -207,7 +207,7 @@ class ExerciseEntryIntegrationTest {
         ExerciseEntryRequestDto request = new ExerciseEntryRequestDto(
                 yoga.getId(), BigDecimal.valueOf(20), Instant.now());
 
-        String createResponse = mockMvc.perform(post("/api/exercise-entries")
+        String createResponse = mockMvc.perform(post("/api/v1/exercise-entries")
                         .with(csrf())
                         .with(asUser())
                         .contentType("application/json")
@@ -216,7 +216,7 @@ class ExerciseEntryIntegrationTest {
 
         Long entryId = objectMapper.readTree(createResponse).get("id").asLong();
 
-        mockMvc.perform(delete("/api/exercise-entries/" + entryId)
+        mockMvc.perform(delete("/api/v1/exercise-entries/" + entryId)
                         .with(csrf())
                         .with(asUser()))
                 .andExpect(status().isNoContent());
@@ -232,7 +232,7 @@ class ExerciseEntryIntegrationTest {
         ExerciseEntryRequestDto request = new ExerciseEntryRequestDto(
                 running.getId(), BigDecimal.valueOf(30), Instant.now());
 
-        String createResponse = mockMvc.perform(post("/api/exercise-entries")
+        String createResponse = mockMvc.perform(post("/api/v1/exercise-entries")
                         .with(csrf())
                         .with(asUser())
                         .contentType("application/json")
@@ -248,7 +248,7 @@ class ExerciseEntryIntegrationTest {
                         otherUser, null, List.of(new SimpleGrantedAuthority("ROLE_USER")))
         );
 
-        mockMvc.perform(get("/api/exercise-entries/" + entryId).with(asOtherUser))
+        mockMvc.perform(get("/api/v1/exercise-entries/" + entryId).with(asOtherUser))
                 .andExpect(status().isNotFound());
     }
 }

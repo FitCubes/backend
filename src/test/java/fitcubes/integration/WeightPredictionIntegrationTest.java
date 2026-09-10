@@ -126,7 +126,7 @@ class WeightPredictionIntegrationTest {
             saveFoodEntry(user.getId(), product, 1.651, 1651.0, now.minus(i, ChronoUnit.DAYS));
         }
 
-        mockMvc.perform(get("/api/dashboard/predicted-weight-change")
+        mockMvc.perform(get("/api/v1/dashboard/predicted-weight-change")
                         .with(asUser(user))
                         .param("from", from.toString())
                         .param("to", now.toString()))
@@ -142,7 +142,7 @@ class WeightPredictionIntegrationTest {
         Instant now = Instant.now();
         Instant from = now.minus(7, ChronoUnit.DAYS);
 
-        String responseJson = mockMvc.perform(get("/api/dashboard/predicted-weight-change")
+        String responseJson = mockMvc.perform(get("/api/v1/dashboard/predicted-weight-change")
                         .with(asUser(user))
                         .param("from", from.toString())
                         .param("to", now.toString()))
@@ -157,7 +157,7 @@ class WeightPredictionIntegrationTest {
         User user = saveUser();
         Instant now = Instant.now();
 
-        mockMvc.perform(get("/api/dashboard/predicted-weight-change")
+        mockMvc.perform(get("/api/v1/dashboard/predicted-weight-change")
                         .with(asUser(user))
                         .param("from", now.toString())
                         .param("to", now.minus(1, ChronoUnit.DAYS).toString()))

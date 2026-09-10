@@ -160,20 +160,21 @@ class AuthenticationServiceTest {
         userRole.setName(RoleName.USER);
 
         User savedUser = new User();
-        UserDto expectedDto = mock(UserDto.class);
+        savedUser.setEmail("new@example.com");
 
         when(userRepository.existsByEmail("new@example.com")).thenReturn(false);
         when(userMapper.toEntity(requestDto)).thenReturn(userEntity);
         when(roleRepository.findByName(RoleName.USER)).thenReturn(Optional.of(userRole));
         when(passwordEncoder.encode("rawPassword")).thenReturn("encodedPassword");
         when(userRepository.save(userEntity)).thenReturn(savedUser);
-        when(userMapper.toDto(savedUser)).thenReturn(expectedDto);
+        when(jwtUtil.generateToken("new@example.com")).thenReturn("generated-jwt-token");
 
         // when
-        UserDto result = authenticationService.register(requestDto);
+        UserLoginResponseDto result = authenticationService.register(requestDto);
 
         // then
-        assertThat(result).isEqualTo(expectedDto);
+        assertThat(result).isNotNull();
+        assertThat(result.token()).isEqualTo("generated-jwt-token");
         assertThat(userEntity.getRoles()).containsExactly(userRole);
         assertThat(userEntity.getPassword()).isEqualTo("encodedPassword");
 
@@ -181,7 +182,7 @@ class AuthenticationServiceTest {
         verify(roleRepository).findByName(RoleName.USER);
         verify(passwordEncoder).encode("rawPassword");
         verify(userRepository).save(userEntity);
-        verify(userMapper).toDto(savedUser);
+        verify(jwtUtil).generateToken("new@example.com");
     }
 
     @Test

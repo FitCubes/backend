@@ -31,3 +31,5 @@ databaseChangeLog:
        file: db/changelog/changes/015-create-weight-logs-table.yaml
   - include:
       file: db/changelog/changes/016-create-exercise-entries-table.yaml
+  - include:
+      file: db/changelog/changes/017-alter-users-table.yaml

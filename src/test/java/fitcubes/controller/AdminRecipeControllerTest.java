@@ -47,7 +47,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(TestSecurityConfig.class)
 class AdminRecipeControllerTest {
 
-    private static final String BASE_URL = "/api/admin/recipes";
+    private static final String BASE_URL = "/api/v1/admin/recipes";
     private static final Long RECIPE_ID = 5L;
 
     @Autowired

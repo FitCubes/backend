@@ -1,6 +1,5 @@
 package fitcubes.controller;
 
-import fitcubes.dto.user.UserDto;
 import fitcubes.dto.user.UserLoginRequestDto;
 import fitcubes.dto.user.UserLoginResponseDto;
 import fitcubes.dto.user.UserRegistrationRequestDto;
@@ -20,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 @Tag(name = "Authentication", description = "Endpoints for user authentication and registration")
 public class AuthenticationController {
 
@@ -56,7 +55,8 @@ public class AuthenticationController {
     )
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDto register(@RequestBody @Valid UserRegistrationRequestDto requestDto) {
+    public UserLoginResponseDto register(
+            @RequestBody @Valid UserRegistrationRequestDto requestDto) {
         return authenticationService.register(requestDto);
     }
 

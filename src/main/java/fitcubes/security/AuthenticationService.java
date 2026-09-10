@@ -1,6 +1,5 @@
 package fitcubes.security;
 
-import fitcubes.dto.user.UserDto;
 import fitcubes.dto.user.UserLoginRequestDto;
 import fitcubes.dto.user.UserLoginResponseDto;
 import fitcubes.dto.user.UserRegistrationRequestDto;
@@ -39,7 +38,7 @@ public class AuthenticationService {
         return new UserLoginResponseDto(token);
     }
 
-    public UserDto register(UserRegistrationRequestDto requestDto) {
+    public UserLoginResponseDto register(UserRegistrationRequestDto requestDto) {
         String normalizedEmail = requestDto.email().toLowerCase();
         if (userRepository.existsByEmail(normalizedEmail)) {
             throw new RegistrationException("Unable to register with the provided details.");
@@ -54,7 +53,8 @@ public class AuthenticationService {
         user.setRoles(Set.of(userRole));
         User savedUser = userRepository.save(user);
 
-        return userMapper.toDto(savedUser);
+        String token = jwtUtil.generateToken(savedUser.getEmail());
+        return new UserLoginResponseDto(token);
     }
 
     public void logout(String authHeader) {

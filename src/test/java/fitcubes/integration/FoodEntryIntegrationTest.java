@@ -121,7 +121,7 @@ class FoodEntryIntegrationTest {
                 BigDecimal.valueOf(2), MealType.BREAKFAST, Instant.now()
         );
 
-        String responseJson = mockMvc.perform(post("/api/food-entries")
+        String responseJson = mockMvc.perform(post("/api/v1/food-entries")
                         .with(csrf())
                         .with(asUser())
                         .contentType("application/json")
@@ -154,7 +154,7 @@ class FoodEntryIntegrationTest {
                 BigDecimal.valueOf(0.5), MealType.LUNCH, Instant.now()
         );
 
-        mockMvc.perform(post("/api/food-entries")
+        mockMvc.perform(post("/api/v1/food-entries")
                         .with(csrf())
                         .with(asUser())
                         .contentType("application/json")
@@ -171,7 +171,7 @@ class FoodEntryIntegrationTest {
                 BigDecimal.ONE, MealType.BREAKFAST, Instant.now()
         );
 
-        mockMvc.perform(post("/api/food-entries")
+        mockMvc.perform(post("/api/v1/food-entries")
                         .with(csrf())
                         .with(asUser())
                         .contentType("application/json")
@@ -189,7 +189,7 @@ class FoodEntryIntegrationTest {
                 BigDecimal.valueOf(2), MealType.DINNER, Instant.now()
         );
 
-        mockMvc.perform(post("/api/food-entries")
+        mockMvc.perform(post("/api/v1/food-entries")
                         .with(csrf())
                         .with(asUser())
                         .contentType("application/json")
@@ -207,7 +207,7 @@ class FoodEntryIntegrationTest {
                 BigDecimal.ONE, MealType.DINNER, Instant.now()
         );
 
-        mockMvc.perform(post("/api/food-entries")
+        mockMvc.perform(post("/api/v1/food-entries")
                         .with(csrf())
                         .with(asUser())
                         .contentType("application/json")
@@ -228,7 +228,7 @@ class FoodEntryIntegrationTest {
                 BigDecimal.valueOf(1), MealType.SNACK, Instant.now()
         );
 
-        String createResponse = mockMvc.perform(post("/api/food-entries")
+        String createResponse = mockMvc.perform(post("/api/v1/food-entries")
                         .with(csrf())
                         .with(asUser())
                         .contentType("application/json")
@@ -244,7 +244,7 @@ class FoodEntryIntegrationTest {
                 BigDecimal.valueOf(3), MealType.SNACK, Instant.now()
         );
 
-        mockMvc.perform(patch("/api/food-entries/" + entryId)
+        mockMvc.perform(patch("/api/v1/food-entries/" + entryId)
                         .with(csrf())
                         .with(asUser())
                         .contentType("application/json")
@@ -267,7 +267,7 @@ class FoodEntryIntegrationTest {
                 BigDecimal.ONE, MealType.SNACK, Instant.now()
         );
 
-        String createResponse = mockMvc.perform(post("/api/food-entries")
+        String createResponse = mockMvc.perform(post("/api/v1/food-entries")
                         .with(csrf())
                         .with(asUser())
                         .contentType("application/json")
@@ -276,7 +276,7 @@ class FoodEntryIntegrationTest {
 
         Long entryId = objectMapper.readTree(createResponse).get("id").asLong();
 
-        mockMvc.perform(delete("/api/food-entries/" + entryId)
+        mockMvc.perform(delete("/api/v1/food-entries/" + entryId)
                         .with(csrf())
                         .with(asUser()))
                 .andExpect(status().isNoContent());
@@ -297,7 +297,7 @@ class FoodEntryIntegrationTest {
                 BigDecimal.ONE, MealType.LUNCH, Instant.now()
         );
 
-        String createResponse = mockMvc.perform(post("/api/food-entries")
+        String createResponse = mockMvc.perform(post("/api/v1/food-entries")
                         .with(csrf())
                         .with(asUser())
                         .contentType("application/json")
@@ -313,7 +313,7 @@ class FoodEntryIntegrationTest {
                         otherUser, null, List.of(new SimpleGrantedAuthority("ROLE_USER")))
         );
 
-        mockMvc.perform(get("/api/food-entries/" + entryId).with(asOtherUser))
+        mockMvc.perform(get("/api/v1/food-entries/" + entryId).with(asOtherUser))
                 .andExpect(status().isNotFound());
     }
 }

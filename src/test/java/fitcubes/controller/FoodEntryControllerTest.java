@@ -97,7 +97,7 @@ class FoodEntryControllerTest {
     void addFoodEntry_returnsCreated() throws Exception {
         when(foodEntryService.addFoodEntry(eq(42L), any())).thenReturn(responseDto());
 
-        mockMvc.perform(post("/api/food-entries")
+        mockMvc.perform(post("/api/v1/food-entries")
                         .with(csrf())
                         .with(asUser())
                         .contentType("application/json")
@@ -115,7 +115,7 @@ class FoodEntryControllerTest {
                 null, MealType.BREAKFAST, Instant.now()
         );
 
-        mockMvc.perform(post("/api/food-entries")
+        mockMvc.perform(post("/api/v1/food-entries")
                         .with(csrf())
                         .with(asUser())
                         .contentType("application/json")
@@ -127,7 +127,7 @@ class FoodEntryControllerTest {
     void updateFoodEntry_returnsOk() throws Exception {
         when(foodEntryService.updateFoodEntry(eq(42L), eq(10L), any())).thenReturn(responseDto());
 
-        mockMvc.perform(patch("/api/food-entries/10")
+        mockMvc.perform(patch("/api/v1/food-entries/10")
                         .with(csrf())
                         .with(asUser())
                         .contentType("application/json")
@@ -141,7 +141,7 @@ class FoodEntryControllerTest {
         when(foodEntryService.updateFoodEntry(eq(42L), eq(999L), any()))
                 .thenThrow(new EntityNotFoundException("Food entry not found: 999"));
 
-        mockMvc.perform(patch("/api/food-entries/999")
+        mockMvc.perform(patch("/api/v1/food-entries/999")
                         .with(csrf())
                         .with(asUser())
                         .contentType("application/json")
@@ -151,7 +151,7 @@ class FoodEntryControllerTest {
 
     @Test
     void deleteFoodEntry_returnsNoContent() throws Exception {
-        mockMvc.perform(delete("/api/food-entries/10")
+        mockMvc.perform(delete("/api/v1/food-entries/10")
                         .with(csrf())
                         .with(asUser()))
                 .andExpect(status().isNoContent());
@@ -163,7 +163,7 @@ class FoodEntryControllerTest {
     void getFoodEntry_returnsOk() throws Exception {
         when(foodEntryService.getFoodEntry(42L, 10L)).thenReturn(responseDto());
 
-        mockMvc.perform(get("/api/food-entries/10").with(asUser()))
+        mockMvc.perform(get("/api/v1/food-entries/10").with(asUser()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.nameSnapshot").value("Egg"));
     }
@@ -175,7 +175,7 @@ class FoodEntryControllerTest {
 
         when(foodEntryService.getFoodEntries(eq(42L), any(), any(), any())).thenReturn(page);
 
-        mockMvc.perform(get("/api/food-entries")
+        mockMvc.perform(get("/api/v1/food-entries")
                         .with(asUser())
                         .param("from", "2026-08-01T00:00:00Z")
                         .param("to", "2026-08-31T23:59:59Z"))
@@ -185,7 +185,7 @@ class FoodEntryControllerTest {
 
     @Test
     void unauthenticated_returns401Or403() throws Exception {
-        mockMvc.perform(get("/api/food-entries")
+        mockMvc.perform(get("/api/v1/food-entries")
                         .param("from", "2026-08-01T00:00:00Z")
                         .param("to", "2026-08-31T23:59:59Z"))
                 .andExpect(status().is4xxClientError());

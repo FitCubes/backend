@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 @PreAuthorize("hasRole('ADMIN')")
-@RequestMapping("/api/admin/recipes")
+@RequestMapping("/api/v1/admin/recipes")
 @Tag(name = "Admin Recipe Management",
         description = "Endpoints for managing global system recipes")
 public class AdminRecipeController {

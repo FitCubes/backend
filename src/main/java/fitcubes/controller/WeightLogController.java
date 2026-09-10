@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/weight-logs")
+@RequestMapping("/api/v1/weight-logs")
 @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 public class WeightLogController {
 

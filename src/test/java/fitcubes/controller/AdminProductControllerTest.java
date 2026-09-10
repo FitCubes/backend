@@ -45,7 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(TestSecurityConfig.class)
 class AdminProductControllerTest {
 
-    private static final String BASE_URL = "/api/admin/products";
+    private static final String BASE_URL = "/api/v1/admin/products";
     private static final Long PRODUCT_ID = 10L;
 
     @Autowired

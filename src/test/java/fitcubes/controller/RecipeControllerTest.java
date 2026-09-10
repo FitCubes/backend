@@ -54,7 +54,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(TestSecurityConfig.class)
 public class RecipeControllerTest {
 
-    private static final String BASE_URL = "/api/recipes";
+    private static final String BASE_URL = "/api/v1/recipes";
     private static final Long RECIPE_ID = 10L;
     private static final Long USER_ID = 1L;
 
