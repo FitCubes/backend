@@ -1,5 +1,6 @@
 package fitcubes.model.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -26,6 +27,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Getter
 @Setter
 @Table(name = "users")
+@JsonIgnoreProperties(value = {"authorities"}, ignoreUnknown = true)
 @NoArgsConstructor
 public class User implements UserDetails {
 
