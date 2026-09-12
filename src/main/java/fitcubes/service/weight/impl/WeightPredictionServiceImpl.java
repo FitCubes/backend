@@ -14,6 +14,7 @@ import java.time.Duration;
 import java.time.Instant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +32,7 @@ public class WeightPredictionServiceImpl implements WeightPredictionService {
     private final CalorieCalculationService calorieCalculationService;
 
     @Override
+    @Transactional
     public PredictedWeightChangeResponseDto getPredictedWeeklyChange(Long userId, Instant from,
                                                                      Instant to) {
         User user = userRepository.findById(userId)

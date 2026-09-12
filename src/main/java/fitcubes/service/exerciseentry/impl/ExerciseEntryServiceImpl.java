@@ -70,6 +70,7 @@ public class ExerciseEntryServiceImpl implements ExerciseEntryService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ExerciseEntryResponseDto getExerciseEntry(Long userId, Long entryId) {
         ExerciseEntry entry = exerciseEntryRepository.findByIdAndUserId(entryId, userId)
                 .orElseThrow(() -> new EntityNotFoundException(
@@ -79,6 +80,7 @@ public class ExerciseEntryServiceImpl implements ExerciseEntryService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<ExerciseEntryResponseDto> getExerciseEntries(Long userId, Instant from,
                                                              Instant to, Pageable pageable) {
         return exerciseEntryRepository

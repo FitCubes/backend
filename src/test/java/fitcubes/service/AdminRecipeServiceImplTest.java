@@ -10,6 +10,7 @@ import static org.mockito.Mockito.verify;
 import fitcubes.dto.recipe.CreateRecipeDto;
 import fitcubes.dto.recipe.RecipeDto;
 import fitcubes.dto.recipe.RecipeIngredientDto;
+import fitcubes.dto.recipe.RecipeSummaryDto;
 import fitcubes.dto.recipe.UpdateRecipeDto;
 import fitcubes.exception.EntityNotFoundException;
 import fitcubes.mapper.RecipeMapper;
@@ -55,6 +56,7 @@ public class AdminRecipeServiceImplTest {
     private CreateRecipeDto createRecipeDto;
     private UpdateRecipeDto updateRecipeDto;
     private RecipeDto recipeDto;
+    private RecipeSummaryDto recipeSummaryDto;
 
     @BeforeEach
     void setUp() {
@@ -73,6 +75,9 @@ public class AdminRecipeServiceImplTest {
         );
         recipeDto = new RecipeDto(
                 RECIPE_ID, USER_ID, RECIPE_NAME, CATEGORY, "Healthy breakfast", 1, 100.0, 250.0, 150.0, 6.0, 25.0, 3.0, 24.0, List.of(ingredientDto)
+        );
+        recipeSummaryDto = new RecipeSummaryDto(
+                RECIPE_ID, USER_ID, RECIPE_NAME, CATEGORY, 1, 100.0, 250.0, 150.0, 6.0, 25.0, 3.0, 0
         );
     }
 
@@ -132,7 +137,7 @@ public class AdminRecipeServiceImplTest {
 
         assertThatThrownBy(() -> adminRecipeService.getRecipeById(RECIPE_ID))
                 .isInstanceOf(EntityNotFoundException.class)
-                .hasMessage("Not found");
+                .hasMessage("Recipe with id:" + RECIPE_ID + " not found");
     }
 
     @Test
@@ -153,7 +158,7 @@ public class AdminRecipeServiceImplTest {
 
         assertThatThrownBy(() -> adminRecipeService.deleteById(RECIPE_ID))
                 .isInstanceOf(EntityNotFoundException.class)
-                .hasMessage("Not found");
+                .hasMessage("Recipe with id:" + RECIPE_ID + " not found");
 
         verify(recipeRepository, never()).delete(any());
     }
@@ -180,7 +185,7 @@ public class AdminRecipeServiceImplTest {
 
         assertThatThrownBy(() -> adminRecipeService.update(updateRecipeDto, RECIPE_ID))
                 .isInstanceOf(EntityNotFoundException.class)
-                .hasMessage("Not found");
+                .hasMessage("Recipe with id:" + RECIPE_ID + " not found");
 
         verify(recipeRepository, never()).save(any());
     }
@@ -191,10 +196,10 @@ public class AdminRecipeServiceImplTest {
         Pageable pageable = PageRequest.of(0, 10);
         Page<Recipe> recipePage = new PageImpl<>(List.of(recipe));
         given(recipeRepository.findAll(pageable)).willReturn(recipePage);
-        given(recipeMapper.toDto(recipe)).willReturn(recipeDto);
+        given(recipeMapper.toSummaryDto(recipe)).willReturn(recipeSummaryDto);
 
-        Page<RecipeDto> result = adminRecipeService.getAllRecipes(pageable);
+        Page<RecipeSummaryDto> result = adminRecipeService.getAllRecipes(pageable);
 
-        assertThat(result.getContent()).containsExactly(recipeDto);
+        assertThat(result.getContent()).containsExactly(recipeSummaryDto);
     }
 }
