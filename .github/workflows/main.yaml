@@ -84,4 +84,43 @@ jobs:
         aws ssm put-parameter --name "${{ secrets.DOCKER_SHA_SSM_NAME }}" --region ${{ secrets.AWS_REGION }} --overwrite --value "${{ github.sha }}"
 
     - name: ASG Refresh
-      run: aws autoscaling start-instance-refresh --region ${{ secrets.AWS_REGION }} --auto-scaling-group-name ${{ secrets.ASG_NAME }} --preferences '{"MinHealthyPercentage":100,"MaxHealthyPercentage":200}'
+      id: refresh
+      run: |
+        REFRESH_ID=$(aws autoscaling start-instance-refresh \
+          --region ${{ secrets.AWS_REGION }} \
+          --auto-scaling-group-name ${{ secrets.ASG_NAME }} \
+          --preferences '{"MinHealthyPercentage":100,"MaxHealthyPercentage":200}' \
+          --query 'InstanceRefreshId' --output text)
+        echo "refresh_id=$REFRESH_ID" >> "$GITHUB_OUTPUT"
+
+    - name: Wait for ASG Refresh to finish
+      timeout-minutes: 30
+      run: |
+        REFRESH_ID=${{ steps.refresh.outputs.refresh_id }}
+
+        while true; do
+          RESULT=$(aws autoscaling describe-instance-refreshes \
+            --region ${{ secrets.AWS_REGION }} \
+            --auto-scaling-group-name ${{ secrets.ASG_NAME }} \
+            --instance-refresh-ids "$REFRESH_ID" \
+            --query 'InstanceRefreshes[0].[Status,PercentageComplete,StatusReason]' \
+            --output text)
+
+          STATUS=$(echo "$RESULT" | cut -f1)
+          PCT=$(echo "$RESULT" | cut -f2)
+          echo "Status: $STATUS ($PCT%)"
+
+          case "$STATUS" in
+            Successful)
+              echo "Instance refresh completed successfully"
+              break
+              ;;
+            Failed|Cancelled|RollbackFailed|RollbackSuccessful)
+              echo "Instance refresh ended with status: $STATUS"
+              echo "$RESULT"
+              exit 1
+              ;;
+          esac
+
+          sleep 30
+        done
