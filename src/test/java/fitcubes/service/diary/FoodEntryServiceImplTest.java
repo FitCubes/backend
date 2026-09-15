@@ -1,4 +1,4 @@
-package fitcubes.service;
+package fitcubes.service.diary;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

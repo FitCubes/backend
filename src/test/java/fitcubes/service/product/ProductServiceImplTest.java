@@ -1,4 +1,4 @@
-package fitcubes.service;
+package fitcubes.service.product;
 
 import fitcubes.dto.product.CreateProductDto;
 import fitcubes.dto.product.ProductDto;

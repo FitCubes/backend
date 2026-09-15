@@ -1,4 +1,4 @@
-package fitcubes.service;
+package fitcubes.service.recipe;
 
 import fitcubes.dto.recipe.CreateRecipeDto;
 import fitcubes.dto.recipe.RecipeDto;
