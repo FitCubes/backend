@@ -1,6 +1,7 @@
 package fitcubes.dto.user;
 
 import fitcubes.model.user.ActivityLevel;
+import fitcubes.model.user.DietStrategy;
 import fitcubes.model.user.Gender;
 import fitcubes.model.user.Goal;
 import jakarta.validation.constraints.Max;
@@ -30,6 +31,17 @@ public record UserProfileUpdateRequestDto(
 
         ActivityLevel activityLevel,
 
-        Goal goal
+        Goal goal,
+
+        DietStrategy dietStrategy,
+
+        @Min(value = 0, message = "Protein target must not be negative")
+        Integer proteinTargetGrams,
+
+        @Min(value = 0, message = "Carbs target must not be negative")
+        Integer carbsTargetGrams,
+
+        @Min(value = 0, message = "Fats target must not be negative")
+        Integer fatsTargetGrams
 ) {
 }

@@ -82,6 +82,7 @@ class FoodEntryIntegrationTest {
         );
     }
 
+    // Wartości calories/fat/protein/carbs w Product to teraz "per 100g"
     private Product saveProduct(double calories, double fat, double protein, double carbs) {
         Product product = new Product();
         product.setName("Egg");
@@ -118,7 +119,7 @@ class FoodEntryIntegrationTest {
         FoodEntryRequestDto request = new FoodEntryRequestDto(
                 SourceType.PRODUCT, egg.getId(), null, null, null,
                 null, null, null, null,
-                BigDecimal.valueOf(2), MealType.BREAKFAST, Instant.now()
+                BigDecimal.valueOf(200), MealType.BREAKFAST, Instant.now()
         );
 
         String responseJson = mockMvc.perform(post("/api/v1/food-entries")
@@ -145,13 +146,13 @@ class FoodEntryIntegrationTest {
     }
 
     @Test
-    void addFoodEntry_withProduct_fractionalQuantity_roundsCorrectly() throws Exception {
+    void addFoodEntry_withProduct_smallQuantity_roundsCorrectly() throws Exception {
         Product rice = saveProduct(130.0, 0.3, 2.7, 28.0);
 
         FoodEntryRequestDto request = new FoodEntryRequestDto(
                 SourceType.PRODUCT, rice.getId(), null, null, null,
                 null, null, null, null,
-                BigDecimal.valueOf(0.5), MealType.LUNCH, Instant.now()
+                BigDecimal.valueOf(50), MealType.LUNCH, Instant.now()
         );
 
         mockMvc.perform(post("/api/v1/food-entries")
@@ -168,7 +169,7 @@ class FoodEntryIntegrationTest {
         FoodEntryRequestDto request = new FoodEntryRequestDto(
                 SourceType.PRODUCT, 999999L, null, null, null,
                 null, null, null, null,
-                BigDecimal.ONE, MealType.BREAKFAST, Instant.now()
+                BigDecimal.valueOf(100), MealType.BREAKFAST, Instant.now()
         );
 
         mockMvc.perform(post("/api/v1/food-entries")
@@ -225,7 +226,7 @@ class FoodEntryIntegrationTest {
         FoodEntryRequestDto createRequest = new FoodEntryRequestDto(
                 SourceType.PRODUCT, banana.getId(), null, null, null,
                 null, null, null, null,
-                BigDecimal.valueOf(1), MealType.SNACK, Instant.now()
+                BigDecimal.valueOf(100), MealType.SNACK, Instant.now()
         );
 
         String createResponse = mockMvc.perform(post("/api/v1/food-entries")
@@ -241,7 +242,7 @@ class FoodEntryIntegrationTest {
         FoodEntryRequestDto updateRequest = new FoodEntryRequestDto(
                 SourceType.PRODUCT, banana.getId(), null, null, null,
                 null, null, null, null,
-                BigDecimal.valueOf(3), MealType.SNACK, Instant.now()
+                BigDecimal.valueOf(300), MealType.SNACK, Instant.now() // 300g
         );
 
         mockMvc.perform(patch("/api/v1/food-entries/" + entryId)
@@ -254,7 +255,7 @@ class FoodEntryIntegrationTest {
 
         FoodEntry persisted = foodEntryRepository.findByIdAndUserId(entryId, USER_ID).orElseThrow();
         assertThat(persisted.getCalories()).isEqualByComparingTo(BigDecimal.valueOf(315.00));
-        assertThat(persisted.getQuantity()).isEqualByComparingTo(BigDecimal.valueOf(3));
+        assertThat(persisted.getQuantity()).isEqualByComparingTo(BigDecimal.valueOf(300));
     }
 
     @Test
@@ -264,7 +265,7 @@ class FoodEntryIntegrationTest {
         FoodEntryRequestDto request = new FoodEntryRequestDto(
                 SourceType.PRODUCT, apple.getId(), null, null, null,
                 null, null, null, null,
-                BigDecimal.ONE, MealType.SNACK, Instant.now()
+                BigDecimal.valueOf(100), MealType.SNACK, Instant.now()
         );
 
         String createResponse = mockMvc.perform(post("/api/v1/food-entries")
@@ -294,7 +295,7 @@ class FoodEntryIntegrationTest {
         FoodEntryRequestDto request = new FoodEntryRequestDto(
                 SourceType.PRODUCT, product.getId(), null, null, null,
                 null, null, null, null,
-                BigDecimal.ONE, MealType.LUNCH, Instant.now()
+                BigDecimal.valueOf(100), MealType.LUNCH, Instant.now()
         );
 
         String createResponse = mockMvc.perform(post("/api/v1/food-entries")

@@ -33,3 +33,5 @@ databaseChangeLog:
       file: db/changelog/changes/016-create-exercise-entries-table.yaml
   - include:
       file: db/changelog/changes/017-alter-users-table.yaml
+  - include:
+      file: db/changelog/changes/018-add-macro-targets-to-users.yaml

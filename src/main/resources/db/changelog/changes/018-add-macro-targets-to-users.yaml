@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - changeSet:
+      id: 018-add-macro-targets-to-users
+      author: senjars
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: diet_strategy
+                  type: VARCHAR(20)
+              - column:
+                  name: protein_target_grams
+                  type: INTEGER
+              - column:
+                  name: carbs_target_grams
+                  type: INTEGER
+              - column:
+                  name: fats_target_grams
+                  type: INTEGER
+      rollback:
+        - dropColumn:
+            tableName: users
+            columnName: diet_strategy
+        - dropColumn:
+            tableName: users
+            columnName: protein_target_grams
+        - dropColumn:
+            tableName: users
+            columnName: carbs_target_grams
+        - dropColumn:
+            tableName: users
+            columnName: fats_target_grams

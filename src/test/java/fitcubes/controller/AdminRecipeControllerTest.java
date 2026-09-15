@@ -9,6 +9,7 @@ import fitcubes.dto.recipe.RecipeSummaryDto;
 import fitcubes.dto.recipe.UpdateRecipeDto;
 import fitcubes.exception.EntityNotFoundException;
 import fitcubes.model.recipe.RecipeCategory;
+import fitcubes.security.CustomAuthenticationEntryPoint;
 import fitcubes.security.JwtUtil;
 import fitcubes.security.TokenBlacklistService;
 import fitcubes.service.recipe.AdminRecipeService;
@@ -65,6 +66,9 @@ class AdminRecipeControllerTest {
 
     @MockitoBean
     private UserDetailsService userDetailsService;
+
+    @MockitoBean
+    private CustomAuthenticationEntryPoint authenticationEntryPoint;
 
     @MockitoBean
     private TokenBlacklistService tokenBlacklistService;

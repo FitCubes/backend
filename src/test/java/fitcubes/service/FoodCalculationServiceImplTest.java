@@ -14,35 +14,35 @@ class FoodCalculationServiceImplTest {
     private final FoodCalculationServiceImpl service = new FoodCalculationServiceImpl();
 
     @Test
-    void calculateCalories_multipliesByQuantity() {
+    void calculateCalories_multipliesByQuantityAndDividesBy100() {
         Product product = mock(Product.class);
-        when(product.getCalories()).thenReturn(155.0);
+        when(product.getCalories()).thenReturn(155.0); // per 100g
 
-        BigDecimal result = service.calculateCalories(product, BigDecimal.valueOf(2));
+        BigDecimal result = service.calculateCalories(product, BigDecimal.valueOf(200)); // grams
 
         assertThat(result).isEqualByComparingTo(BigDecimal.valueOf(310.00));
     }
 
     @Test
-    void calculateCalories_fractionalQuantity_roundsToTwoDecimals() {
+    void calculateCalories_smallQuantity_roundsToTwoDecimals() {
         Product product = mock(Product.class);
-        when(product.getCalories()).thenReturn(78.0);
+        when(product.getCalories()).thenReturn(78.0); // per 100g
 
-        BigDecimal result = service.calculateCalories(product, BigDecimal.valueOf(0.5));
+        BigDecimal result = service.calculateCalories(product, BigDecimal.valueOf(50)); // grams
 
         assertThat(result).isEqualByComparingTo(BigDecimal.valueOf(39.00));
     }
 
     @Test
     void calculateMacro_nullValue_returnsNull() {
-        BigDecimal result = service.calculateMacro(null, BigDecimal.valueOf(2));
+        BigDecimal result = service.calculateMacro(null, BigDecimal.valueOf(200));
 
         assertThat(result).isNull();
     }
 
     @Test
     void calculateMacro_returnsScaledValue() {
-        BigDecimal result = service.calculateMacro(BigDecimal.valueOf(6), BigDecimal.valueOf(2));
+        BigDecimal result = service.calculateMacro(BigDecimal.valueOf(6), BigDecimal.valueOf(200));
 
         assertThat(result).isEqualByComparingTo(BigDecimal.valueOf(12.00));
     }

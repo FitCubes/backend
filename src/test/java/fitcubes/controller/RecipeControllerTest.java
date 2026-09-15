@@ -13,6 +13,7 @@ import fitcubes.model.recipe.RecipeCategory;
 import fitcubes.model.user.Role;
 import fitcubes.model.user.RoleName;
 import fitcubes.model.user.User;
+import fitcubes.security.CustomAuthenticationEntryPoint;
 import fitcubes.security.JwtUtil;
 import fitcubes.security.TokenBlacklistService;
 import fitcubes.service.recipe.RecipeService;
@@ -70,6 +71,9 @@ public class RecipeControllerTest {
 
     @MockitoBean
     private JwtUtil jwtUtil;
+
+    @MockitoBean
+    private CustomAuthenticationEntryPoint authenticationEntryPoint;
 
     @MockitoBean
     private UserDetailsService userDetailsService;

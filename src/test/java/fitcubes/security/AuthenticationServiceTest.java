@@ -85,8 +85,15 @@ class AuthenticationServiceTest {
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 "john@example.com", "password123");
 
+        User user = new User();
+        user.setId(1L);
+        user.setEmail("john@example.com");
+        user.setFirstName("John");
+        user.setLastName("Doe");
+
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenReturn(authentication);
+        when(userRepository.findByEmail("john@example.com")).thenReturn(Optional.of(user));
         when(jwtUtil.generateToken("john@example.com")).thenReturn("generated-jwt-token");
 
         // when
@@ -95,6 +102,8 @@ class AuthenticationServiceTest {
         // then
         assertThat(response).isNotNull();
         assertThat(response.token()).isEqualTo("generated-jwt-token");
+        assertThat(response.user().email()).isEqualTo("john@example.com");
+        assertThat(response.user().name()).isEqualTo("John Doe");
 
         verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
         verify(jwtUtil).generateToken("john@example.com");
@@ -108,8 +117,15 @@ class AuthenticationServiceTest {
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 "jane@example.com", "secret");
 
+        User user = new User();
+        user.setId(2L);
+        user.setEmail("jane@example.com");
+        user.setFirstName("Jane");
+        user.setLastName("Smith");
+
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenReturn(authentication);
+        when(userRepository.findByEmail("jane@example.com")).thenReturn(Optional.of(user));
         when(jwtUtil.generateToken(anyString())).thenReturn("token");
 
         // when

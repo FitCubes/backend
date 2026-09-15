@@ -20,6 +20,7 @@ import fitcubes.exception.EntityNotFoundException;
 import fitcubes.model.foodentry.MealType;
 import fitcubes.model.foodentry.SourceType;
 import fitcubes.model.user.User;
+import fitcubes.security.CustomAuthenticationEntryPoint;
 import fitcubes.security.JwtUtil;
 import fitcubes.security.TokenBlacklistService;
 import fitcubes.service.foodentry.FoodEntryService;
@@ -52,6 +53,9 @@ class FoodEntryControllerTest {
 
     @MockitoBean
     private FoodEntryService foodEntryService;
+
+    @MockitoBean
+    private CustomAuthenticationEntryPoint authenticationEntryPoint;
 
     @MockitoBean
     private JwtUtil jwtUtil;

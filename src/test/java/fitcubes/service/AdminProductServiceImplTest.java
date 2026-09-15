@@ -63,9 +63,9 @@ public class AdminProductServiceImplTest {
         user = createUser(USER_ID);
         product = createProduct(PRODUCT_ID, user);
 
-        createProductDto = new CreateProductDto(PRODUCT_NAME, CATEGORY, 100, 2.0, 15.0, 5.0);
-        updateProductDto = new UpdateProductDto(PRODUCT_NAME, CATEGORY, 120, 3.0, 18.0, 6.0);
-        productDto = new ProductDto(PRODUCT_ID, PRODUCT_NAME, CATEGORY, 100, 2.0, 15.0, 5.0, 20.0);
+        createProductDto = new CreateProductDto(PRODUCT_NAME, CATEGORY, 100.0, 2.0, 15.0, 5.0);
+        updateProductDto = new UpdateProductDto(PRODUCT_NAME, CATEGORY, 120.0, 3.0, 18.0, 6.0);
+        productDto = new ProductDto(PRODUCT_ID, PRODUCT_NAME, CATEGORY, 100.0, 2.0, 15.0, 5.0, 20.0);
     }
 
     private User createUser(Long id) {
