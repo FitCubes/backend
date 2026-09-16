@@ -64,8 +64,7 @@ public class User implements UserDetails {
     private Double targetWeight;
 
     @Column(name = "activity_level")
-    @Enumerated(EnumType.STRING)
-    private ActivityLevel activityLevel;
+    private Double activityLevel;
 
     @Column(name = "goal")
     @Enumerated(EnumType.STRING)

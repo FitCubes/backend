@@ -2,7 +2,6 @@ package fitcubes.service.dashboard;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import fitcubes.model.user.ActivityLevel;
 import fitcubes.model.user.Gender;
 import fitcubes.model.user.Goal;
 import fitcubes.model.user.User;
@@ -15,7 +14,7 @@ class CalorieCalculationServiceImplTest {
     private final CalorieCalculationServiceImpl service = new CalorieCalculationServiceImpl();
 
     private User buildUser(Gender gender, double weight, int height, int age,
-                           ActivityLevel activityLevel, Goal goal) {
+                           double activityLevel, Goal goal) {
         User user = new User();
         user.setGender(gender);
         user.setCurrentWeight(weight);
@@ -28,8 +27,7 @@ class CalorieCalculationServiceImplTest {
 
     @Test
     void calculateBmr_male_usesCorrectFormula() {
-        User user = buildUser(Gender.MALE, 80, 180, 30,
-                ActivityLevel.SEDENTARY, Goal.MAINTENANCE);
+        User user = buildUser(Gender.MALE, 80, 180, 30, 1.2, Goal.MAINTENANCE);
 
         BigDecimal result = service.calculateBmr(user);
 
@@ -38,8 +36,7 @@ class CalorieCalculationServiceImplTest {
 
     @Test
     void calculateBmr_female_usesCorrectFormula() {
-        User user = buildUser(Gender.FEMALE, 65, 165, 25,
-                ActivityLevel.SEDENTARY, Goal.MAINTENANCE);
+        User user = buildUser(Gender.FEMALE, 65, 165, 25, 1.2, Goal.MAINTENANCE);
 
         BigDecimal result = service.calculateBmr(user);
 
@@ -48,8 +45,7 @@ class CalorieCalculationServiceImplTest {
 
     @Test
     void calculateTdee_appliesActivityFactor() {
-        User user = buildUser(Gender.MALE, 80, 180, 30,
-                ActivityLevel.MODERATELY_ACTIVE, Goal.MAINTENANCE);
+        User user = buildUser(Gender.MALE, 80, 180, 30, 1.55, Goal.MAINTENANCE);
 
         BigDecimal result = service.calculateTdee(user);
 
@@ -58,10 +54,8 @@ class CalorieCalculationServiceImplTest {
 
     @Test
     void calculateTdee_sedentaryVsVeryActive_producesDifferentResults() {
-        User sedentary = buildUser(Gender.MALE, 80, 180, 30,
-                ActivityLevel.SEDENTARY, Goal.MAINTENANCE);
-        User veryActive = buildUser(Gender.MALE, 80, 180, 30,
-                ActivityLevel.VERY_ACTIVE, Goal.MAINTENANCE);
+        User sedentary = buildUser(Gender.MALE, 80, 180, 30, 1.2, Goal.MAINTENANCE);
+        User veryActive = buildUser(Gender.MALE, 80, 180, 30, 1.725, Goal.MAINTENANCE);
 
         BigDecimal resultSedentary = service.calculateTdee(sedentary);
         BigDecimal resultVeryActive = service.calculateTdee(veryActive);
@@ -71,8 +65,7 @@ class CalorieCalculationServiceImplTest {
 
     @Test
     void calculateTargetCalories_maintenance_equalsTdee() {
-        User user = buildUser(Gender.MALE, 80, 180, 30,
-                ActivityLevel.SEDENTARY, Goal.MAINTENANCE);
+        User user = buildUser(Gender.MALE, 80, 180, 30, 1.2, Goal.MAINTENANCE);
 
         BigDecimal tdee = service.calculateTdee(user);
         BigDecimal target = service.calculateTargetCalories(user);
@@ -82,8 +75,7 @@ class CalorieCalculationServiceImplTest {
 
     @Test
     void calculateTargetCalories_weightLoss_appliesDeficit() {
-        User user = buildUser(Gender.MALE, 80, 180, 30,
-                ActivityLevel.MODERATELY_ACTIVE, Goal.WEIGHT_LOSS);
+        User user = buildUser(Gender.MALE, 80, 180, 30, 1.55, Goal.WEIGHT_LOSS);
 
         BigDecimal target = service.calculateTargetCalories(user);
 
@@ -92,8 +84,7 @@ class CalorieCalculationServiceImplTest {
 
     @Test
     void calculateTargetCalories_muscleGain_appliesSurplus() {
-        User user = buildUser(Gender.MALE, 80, 180, 30,
-                ActivityLevel.MODERATELY_ACTIVE, Goal.MUSCLE_GAIN);
+        User user = buildUser(Gender.MALE, 80, 180, 30, 1.55, Goal.MUSCLE_GAIN);
 
         BigDecimal target = service.calculateTargetCalories(user);
 
@@ -102,8 +93,7 @@ class CalorieCalculationServiceImplTest {
 
     @Test
     void calculateTargetCalories_veryLowDeficit_clampedToSafeMinimumFemale() {
-        User user = buildUser(Gender.FEMALE, 45, 150, 65,
-                ActivityLevel.SEDENTARY, Goal.WEIGHT_LOSS);
+        User user = buildUser(Gender.FEMALE, 45, 150, 65, 1.2, Goal.WEIGHT_LOSS);
 
         BigDecimal target = service.calculateTargetCalories(user);
 
@@ -112,8 +102,7 @@ class CalorieCalculationServiceImplTest {
 
     @Test
     void calculateTargetCalories_veryLowDeficit_clampedToSafeMinimumMale() {
-        User user = buildUser(Gender.MALE, 50, 155, 70,
-                ActivityLevel.SEDENTARY, Goal.WEIGHT_LOSS);
+        User user = buildUser(Gender.MALE, 50, 155, 70, 1.2, Goal.WEIGHT_LOSS);
 
         BigDecimal target = service.calculateTargetCalories(user);
 

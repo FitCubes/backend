@@ -151,13 +151,14 @@ public class FoodEntryServiceImpl implements FoodEntryService {
         entry.setRecipeId(recipe.getId());
         entry.setProductId(null);
         entry.setNameSnapshot(recipe.getName());
-        entry.setCalories(recipe.getCaloriesPerServing().multiply(requestDto.quantity()));
-        entry.setProtein(recipe.getProteinPerServing() == null ? null
-                : recipe.getProteinPerServing().multiply(requestDto.quantity()));
-        entry.setCarbs(recipe.getCarbsPerServing() == null ? null
-                : recipe.getCarbsPerServing().multiply(requestDto.quantity()));
-        entry.setFat(recipe.getFatsPerServing() == null ? null
-                : recipe.getFatsPerServing().multiply(requestDto.quantity()));
+        entry.setCalories(calculationService.calculateMacro(
+                recipe.getCaloriesPer100g(), requestDto.quantity()));
+        entry.setProtein(calculationService.calculateMacro(
+                recipe.getProteinPer100g(), requestDto.quantity()));
+        entry.setCarbs(calculationService.calculateMacro(
+                recipe.getCarbsPer100g(), requestDto.quantity()));
+        entry.setFat(calculationService.calculateMacro(
+                recipe.getFatsPer100g(), requestDto.quantity()));
     }
 
     private void applyCustom(FoodEntry entry, FoodEntryRequestDto requestDto) {

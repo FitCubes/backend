@@ -10,7 +10,6 @@ import static org.mockito.Mockito.when;
 import fitcubes.dto.user.UserProfileDto;
 import fitcubes.dto.user.UserProfileUpdateRequestDto;
 import fitcubes.exception.UserNotFoundException;
-import fitcubes.model.user.ActivityLevel;
 import fitcubes.model.user.DietStrategy;
 import fitcubes.model.user.Gender;
 import fitcubes.model.user.Goal;
@@ -51,8 +50,7 @@ class UserServiceImplTest {
         user.setHeight(180);
         user.setCurrentWeight(85.5);
         user.setTargetWeight(78.0);
-        user.setActivityLevel(ActivityLevel.MODERATELY_ACTIVE);
-        user.setGoal(Goal.MAINTENANCE);
+        user.setActivityLevel(1.55);        user.setGoal(Goal.MAINTENANCE);
         user.setDietStrategy(DietStrategy.BALANCED);
         user.setProteinTargetGrams(154);
         user.setCarbsTargetGrams(321);

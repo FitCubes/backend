@@ -1,9 +1,10 @@
 package fitcubes.dto.user;
 
-import fitcubes.model.user.ActivityLevel;
 import fitcubes.model.user.DietStrategy;
 import fitcubes.model.user.Gender;
 import fitcubes.model.user.Goal;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 
@@ -29,7 +30,9 @@ public record UserProfileUpdateRequestDto(
         @Max(value = 300, message = "Target weight must be less than 300")
         Double targetWeight,
 
-        ActivityLevel activityLevel,
+        @DecimalMin(value = "1.2", message = "Activity level must be at least 1.2")
+        @DecimalMax(value = "1.9", message = "Activity level must be at most 1.9")
+        Double activityLevel,
 
         Goal goal,
 

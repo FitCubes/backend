@@ -97,8 +97,7 @@ public class UserServiceImpl implements UserService {
                 buildName(user),
                 user.getCurrentWeight(),
                 user.getHeight() != null ? user.getHeight().doubleValue() : null,
-                user.getActivityLevel() != null
-                        ? String.valueOf(user.getActivityLevel().getFactor()) : null,
+                user.getActivityLevel(),
                 user.getDietStrategy(),
                 macroTargets
         );

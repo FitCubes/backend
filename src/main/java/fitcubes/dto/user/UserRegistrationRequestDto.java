@@ -1,6 +1,5 @@
 package fitcubes.dto.user;
 
-import fitcubes.model.user.ActivityLevel;
 import fitcubes.model.user.Gender;
 import fitcubes.model.user.Goal;
 import fitcubes.validation.PasswordMatch;
@@ -42,7 +41,7 @@ public record UserRegistrationRequestDto(
         @Max(value = 300, message = "Target weightlog must be less than 300")
         Double targetWeight,
 
-        ActivityLevel activityLevel,
+        Double activityLevel,
 
         Goal goal
 ) {

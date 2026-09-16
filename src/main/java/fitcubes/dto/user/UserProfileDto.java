@@ -8,7 +8,7 @@ public record UserProfileDto(
         String name,
         Double weightKg,
         Double heightCm,
-        String activityFactor,
+        Double activityFactor,
         DietStrategy dietStrategy,
         MacroTargetsDto macroTargets
 ) {

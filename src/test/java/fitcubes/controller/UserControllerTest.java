@@ -63,7 +63,7 @@ class UserControllerTest {
     void setUp() {
         MacroTargetsDto macros = new MacroTargetsDto(2860, 154, 321, 107);
         profileDto = new UserProfileDto(
-                1L, EMAIL, "John Doe", 85.5, 180.0, "1.55",
+                1L, EMAIL, "John Doe", 85.5, 180.0, 1.55,
                 DietStrategy.BALANCED, macros
         );
     }

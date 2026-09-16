@@ -3,7 +3,6 @@ package fitcubes.validation;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import fitcubes.dto.user.UserRegistrationRequestDto;
-import fitcubes.model.user.ActivityLevel;
 import fitcubes.model.user.Gender;
 import fitcubes.model.user.Goal;
 import jakarta.validation.ConstraintViolation;
@@ -48,7 +47,7 @@ class UserRegistrationRequestDtoValidationTest {
         return new UserRegistrationRequestDto(
                 "test@example.com", password, repeatedPassword,
                 "John", "Doe", Gender.MALE, 25, 180, 80.0, 75.0,
-                ActivityLevel.MODERATELY_ACTIVE, Goal.WEIGHT_LOSS
+                1.55, Goal.WEIGHT_LOSS
         );
     }
 }

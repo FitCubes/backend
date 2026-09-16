@@ -5,7 +5,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import fitcubes.model.user.ActivityLevel;
 import fitcubes.model.user.Gender;
 import fitcubes.model.user.Goal;
 import fitcubes.model.user.User;
@@ -60,7 +59,7 @@ class WeightProgressIntegrationTest {
         user.setHeight(165);
         user.setCurrentWeight(70.0);
         user.setTargetWeight(62.0);
-        user.setActivityLevel(ActivityLevel.LIGHTLY_ACTIVE);
+        user.setActivityLevel(1.375);
         user.setGoal(Goal.WEIGHT_LOSS);
         return userRepository.save(user);
     }

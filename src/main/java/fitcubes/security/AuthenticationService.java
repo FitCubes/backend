@@ -74,7 +74,14 @@ public class AuthenticationService {
     }
 
     private UserSummaryDto toSummaryDto(User user) {
-        return new UserSummaryDto(user.getId(), user.getEmail(),
-                user.getFirstName() + " " + user.getLastName());
+        return new UserSummaryDto(user.getId(), user.getEmail(), buildName(user));
+    }
+
+    private String buildName(User user) {
+        if (user.getFirstName() == null && user.getLastName() == null) {
+            return null;
+        }
+        return (user.getFirstName() != null ? user.getFirstName() : "")
+                + (user.getLastName() != null ? " " + user.getLastName() : "");
     }
 }

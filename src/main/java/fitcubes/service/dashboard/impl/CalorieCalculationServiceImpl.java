@@ -33,7 +33,7 @@ public class CalorieCalculationServiceImpl implements CalorieCalculationService 
     @Override
     public BigDecimal calculateTdee(User user) {
         BigDecimal bmr = calculateBmr(user);
-        BigDecimal factor = BigDecimal.valueOf(user.getActivityLevel().getFactor());
+        BigDecimal factor = BigDecimal.valueOf(user.getActivityLevel());
 
         return bmr.multiply(factor).setScale(SCALE, RoundingMode.HALF_UP);
     }

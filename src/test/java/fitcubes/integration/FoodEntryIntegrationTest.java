@@ -82,7 +82,6 @@ class FoodEntryIntegrationTest {
         );
     }
 
-    // Wartości calories/fat/protein/carbs w Product to teraz "per 100g"
     private Product saveProduct(double calories, double fat, double protein, double carbs) {
         Product product = new Product();
         product.setName("Egg");
@@ -94,7 +93,7 @@ class FoodEntryIntegrationTest {
         return productRepository.save(product);
     }
 
-    private Recipe saveRecipeWithPerServingValues(BigDecimal caloriesPerServing) {
+    private Recipe saveRecipe() {
         Recipe recipe = new Recipe();
         recipe.setName("Chicken Soup");
         recipe.setCategory("Soup");
@@ -105,10 +104,7 @@ class FoodEntryIntegrationTest {
         recipe.setProteinPer100g(BigDecimal.valueOf(5));
         recipe.setCarbsPer100g(BigDecimal.valueOf(7.5));
         recipe.setFatsPer100g(BigDecimal.valueOf(2.5));
-        recipe.setCaloriesPerServing(caloriesPerServing);
-        recipe.setProteinPerServing(BigDecimal.valueOf(10));
-        recipe.setCarbsPerServing(BigDecimal.valueOf(15));
-        recipe.setFatsPerServing(BigDecimal.valueOf(5));
+        recipe.setCaloriesPerServing(BigDecimal.ZERO);
         return recipeRepository.save(recipe);
     }
 
@@ -181,13 +177,13 @@ class FoodEntryIntegrationTest {
     }
 
     @Test
-    void addFoodEntry_withRecipe_multipliesCaloriesPerServingByQuantity() throws Exception {
-        Recipe soup = saveRecipeWithPerServingValues(BigDecimal.valueOf(500));
+    void addFoodEntry_withRecipe_calculatesPerHundredGrams() throws Exception {
+        Recipe soup = saveRecipe();
 
         FoodEntryRequestDto request = new FoodEntryRequestDto(
                 SourceType.RECIPE, null, soup.getId(), null, null,
                 null, null, null, null,
-                BigDecimal.valueOf(2), MealType.DINNER, Instant.now()
+                BigDecimal.valueOf(400), MealType.DINNER, Instant.now() // 400g
         );
 
         mockMvc.perform(post("/api/v1/food-entries")
@@ -196,7 +192,8 @@ class FoodEntryIntegrationTest {
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.calories").value(1000.0))
+                .andExpect(jsonPath("$.calories").value(250.0))
+                .andExpect(jsonPath("$.protein").value(20.0))
                 .andExpect(jsonPath("$.nameSnapshot").value("Chicken Soup"));
     }
 
