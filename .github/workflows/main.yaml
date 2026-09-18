@@ -83,7 +83,7 @@ jobs:
 
     - name: Download task definition
       run: |
-           aws ecs describe-task-definition --task-definition ${{ secrets.ECS_TASK_DEFINITION_NAME }} --region ${{ secrets.AWS_REGION }} > task_definition.json
+           aws ecs describe-task-definition --task-definition ${{ secrets.ECS_TASK_DEFINITION_NAME }} --region ${{ secrets.AWS_REGION }} --query taskDefinition --output json > task_definition.json
 
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def
