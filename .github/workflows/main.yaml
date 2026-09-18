@@ -34,6 +34,8 @@ jobs:
   build-docker:
     if: github.event_name == 'push' && github.ref_name == 'main' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
+    outputs:
+      deploy-image: ${{ secrets.REPOSITORY_NAME }}:${{ steps.docker-metadata.outputs.version }}
     needs: ci-test
 
     steps:
@@ -56,7 +58,7 @@ jobs:
           images: ${{ secrets.REPOSITORY_NAME }}
           tags: |
             type=raw,value=latest,enable=${{ github.ref_name == 'main' }}
-            type=raw,value=${{ github.sha }}
+            type=sha,priority=250
 
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v7
@@ -79,48 +81,22 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
 
-    - name: Update SSM version
+    - name: Download task definition
       run: |
-        aws ssm put-parameter --name "${{ secrets.DOCKER_SHA_SSM_NAME }}" --region ${{ secrets.AWS_REGION }} --overwrite --value "${{ github.sha }}"
+           aws ecs describe-task-definition --task-definition ${{ secrets.ECS_TASK_DEFINITION_NAME }} --region ${{ secrets.AWS_REGION }} > task_definition.json
 
-    - name: ASG Refresh
-      id: refresh
-      run: |
-        REFRESH_ID=$(aws autoscaling start-instance-refresh \
-          --region ${{ secrets.AWS_REGION }} \
-          --auto-scaling-group-name ${{ secrets.ASG_NAME }} \
-          --preferences '{"MinHealthyPercentage":100,"MaxHealthyPercentage":200}' \
-          --query 'InstanceRefreshId' --output text)
-        echo "refresh_id=$REFRESH_ID" >> "$GITHUB_OUTPUT"
+    - name: Fill in the new image ID in the Amazon ECS task definition
+      id: task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: task_definition.json
+        container-name: backend-java
+        image: ${{ needs.build-docker.outputs.deploy-image }}
 
-    - name: Wait for ASG Refresh to finish
-      timeout-minutes: 30
-      run: |
-        REFRESH_ID=${{ steps.refresh.outputs.refresh_id }}
-
-        while true; do
-          RESULT=$(aws autoscaling describe-instance-refreshes \
-            --region ${{ secrets.AWS_REGION }} \
-            --auto-scaling-group-name ${{ secrets.ASG_NAME }} \
-            --instance-refresh-ids "$REFRESH_ID" \
-            --query 'InstanceRefreshes[0].[Status,PercentageComplete,StatusReason]' \
-            --output text)
-
-          STATUS=$(echo "$RESULT" | cut -f1)
-          PCT=$(echo "$RESULT" | cut -f2)
-          echo "Status: $STATUS ($PCT%)"
-
-          case "$STATUS" in
-            Successful)
-              echo "Instance refresh completed successfully"
-              break
-              ;;
-            Failed|Cancelled|RollbackFailed|RollbackSuccessful)
-              echo "Instance refresh ended with status: $STATUS"
-              echo "$RESULT"
-              exit 1
-              ;;
-          esac
-
-          sleep 30
-        done
+    - name: Deploy ECS task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+      with:
+        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        cluster: ${{ secrets.ECS_CLUSTER_NAME }}
+        service: ${{ secrets.ECS_SERVICE_NAME }}
+        wait-for-service-stability: true
