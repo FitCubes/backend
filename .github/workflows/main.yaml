@@ -74,6 +74,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+    - name: Debug image value
+      run: echo "IMAGE=${{ needs.build-docker.outputs.deploy-image }}"
+
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
