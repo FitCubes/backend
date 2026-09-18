@@ -35,7 +35,7 @@ jobs:
     if: github.event_name == 'push' && github.ref_name == 'main' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     outputs:
-      deploy-image: ${{ secrets.REPOSITORY_NAME }}:${{ steps.docker-metadata.outputs.version }}
+      image-tag: ${{ steps.docker-metadata.outputs.version }}
     needs: ci-test
 
     steps:
@@ -74,9 +74,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-    - name: Debug image value
-      run: echo "IMAGE=${{ needs.build-docker.outputs.deploy-image }}"
-
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
@@ -94,7 +91,7 @@ jobs:
       with:
         task-definition: task_definition.json
         container-name: backend-java
-        image: ${{ needs.build-docker.outputs.deploy-image }}
+        image: ${{ secrets.REPOSITORY_NAME }}:${{ needs.build-docker.outputs.image-tag }}
 
     - name: Deploy ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v2
