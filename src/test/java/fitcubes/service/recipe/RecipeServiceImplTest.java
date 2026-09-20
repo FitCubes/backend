@@ -1,8 +1,9 @@
-package fitcubes.service;
+package fitcubes.service.recipe;
 
 import fitcubes.dto.recipe.CreateRecipeDto;
 import fitcubes.dto.recipe.RecipeDto;
 import fitcubes.dto.recipe.RecipeIngredientDto;
+import fitcubes.dto.recipe.RecipeSummaryDto;
 import fitcubes.dto.recipe.UpdateRecipeDto;
 import fitcubes.exception.AccessDeniedException;
 import fitcubes.exception.EntityNotFoundException;
@@ -62,6 +63,7 @@ class RecipeServiceImplTest {
     private CreateRecipeDto createRecipeDto;
     private UpdateRecipeDto updateRecipeDto;
     private RecipeDto recipeDto;
+    private RecipeSummaryDto recipeSummaryDto;
 
     @BeforeEach
     void setUp() {
@@ -80,6 +82,9 @@ class RecipeServiceImplTest {
         );
         recipeDto = new RecipeDto(
                 RECIPE_ID, USER_ID, RECIPE_NAME, CATEGORY, "Healthy breakfast", 1, 100.0, 250.0, 150.0, 6.0, 25.0, 3.0, 24.0, List.of(ingredientDto)
+        );
+        recipeSummaryDto = new RecipeSummaryDto(
+                RECIPE_ID, USER_ID, RECIPE_NAME, CATEGORY, 1, 100.0, 250.0, 150.0, 6.0, 25.0, 3.0, 1
         );
     }
 
@@ -254,11 +259,11 @@ class RecipeServiceImplTest {
             Page<Recipe> recipePage = new PageImpl<>(List.of(recipe));
             given(recipeRepository.findAllGlobalOrByUserIdAndCategory(USER_ID, CATEGORY, pageable))
                     .willReturn(recipePage);
-            given(recipeMapper.toDto(recipe)).willReturn(recipeDto);
+            given(recipeMapper.toSummaryDto(recipe)).willReturn(recipeSummaryDto);
 
-            Page<RecipeDto> result = recipeService.getAllRecipes(pageable, CATEGORY, USER_ID);
+            Page<RecipeSummaryDto> result = recipeService.getAllRecipes(pageable, CATEGORY, USER_ID);
 
-            assertThat(result.getContent()).containsExactly(recipeDto);
+            assertThat(result.getContent()).containsExactly(recipeSummaryDto);
         }
 
         @Test
@@ -268,7 +273,7 @@ class RecipeServiceImplTest {
             given(recipeRepository.findAllGlobalOrByUserIdAndCategory(USER_ID, CATEGORY, pageable))
                     .willReturn(Page.empty(pageable));
 
-            Page<RecipeDto> result = recipeService.getAllRecipes(pageable, CATEGORY, USER_ID);
+            Page<RecipeSummaryDto> result = recipeService.getAllRecipes(pageable, CATEGORY, USER_ID);
 
             assertThat(result.getContent()).isEmpty();
         }

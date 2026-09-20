@@ -1,9 +1,10 @@
 package fitcubes.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import fitcubes.config.TestcontainersConfiguration;
 import fitcubes.model.recipe.Recipe;
 import fitcubes.model.recipe.RecipeCategory;
-import fitcubes.model.user.ActivityLevel;
 import fitcubes.model.user.Gender;
 import fitcubes.model.user.Goal;
 import fitcubes.model.user.User;
@@ -20,8 +21,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @Import(TestcontainersConfiguration.class)
@@ -166,7 +165,7 @@ class RecipeRepositoryTest {
         user.setTargetWeight(75.0);
 
         user.setGender(Gender.MALE);
-        user.setActivityLevel(ActivityLevel.MODERATELY_ACTIVE);
+        user.setActivityLevel(1.55);
         user.setGoal(Goal.WEIGHT_LOSS);
 
         return entityManager.persistAndFlush(user);

@@ -2,6 +2,7 @@ package fitcubes.service.recipe.impl;
 
 import fitcubes.dto.recipe.CreateRecipeDto;
 import fitcubes.dto.recipe.RecipeDto;
+import fitcubes.dto.recipe.RecipeSummaryDto;
 import fitcubes.dto.recipe.UpdateRecipeDto;
 import fitcubes.exception.AccessDeniedException;
 import fitcubes.exception.EntityNotFoundException;
@@ -77,9 +78,9 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<RecipeDto> getAllRecipes(Pageable pageable, String category, Long userId) {
+    public Page<RecipeSummaryDto> getAllRecipes(Pageable pageable, String category, Long userId) {
         return recipeRepository.findAllGlobalOrByUserIdAndCategory(userId, category, pageable)
-                .map(recipeMapper::toDto);
+                .map(recipeMapper::toSummaryDto);
     }
 
     private Recipe getRecipeByIdOrThrow(Long recipeId) {

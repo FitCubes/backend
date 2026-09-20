@@ -64,12 +64,24 @@ public class User implements UserDetails {
     private Double targetWeight;
 
     @Column(name = "activity_level")
-    @Enumerated(EnumType.STRING)
-    private ActivityLevel activityLevel;
+    private Double activityLevel;
 
     @Column(name = "goal")
     @Enumerated(EnumType.STRING)
     private Goal goal;
+
+    @Column(name = "diet_strategy")
+    @Enumerated(EnumType.STRING)
+    private DietStrategy dietStrategy;
+
+    @Column(name = "protein_target_grams")
+    private Integer proteinTargetGrams;
+
+    @Column(name = "carbs_target_grams")
+    private Integer carbsTargetGrams;
+
+    @Column(name = "fats_target_grams")
+    private Integer fatsTargetGrams;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

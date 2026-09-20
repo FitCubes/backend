@@ -18,6 +18,7 @@ import fitcubes.dto.exerciseentry.ExerciseEntryRequestDto;
 import fitcubes.dto.exerciseentry.ExerciseEntryResponseDto;
 import fitcubes.exception.EntityNotFoundException;
 import fitcubes.model.user.User;
+import fitcubes.security.CustomAuthenticationEntryPoint;
 import fitcubes.security.JwtUtil;
 import fitcubes.security.TokenBlacklistService;
 import fitcubes.service.exerciseentry.ExerciseEntryService;
@@ -50,6 +51,9 @@ class ExerciseEntryControllerTest {
 
     @MockitoBean
     private ExerciseEntryService exerciseEntryService;
+
+    @MockitoBean
+    private CustomAuthenticationEntryPoint authenticationEntryPoint;
 
     @MockitoBean
     private JwtUtil jwtUtil;

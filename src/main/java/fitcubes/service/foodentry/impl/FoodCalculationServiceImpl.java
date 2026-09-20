@@ -9,12 +9,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class FoodCalculationServiceImpl implements FoodCalculationService {
 
+    private static final BigDecimal HUNDRED = BigDecimal.valueOf(100);
     private static final int SCALE = 2;
 
+    @Override
     public BigDecimal calculateCalories(Product product, BigDecimal quantity) {
         return calculate(BigDecimal.valueOf(product.getCalories()), quantity);
     }
 
+    @Override
     public BigDecimal calculateMacro(BigDecimal macroValue, BigDecimal quantity) {
         if (macroValue == null) {
             return null;
@@ -25,6 +28,6 @@ public class FoodCalculationServiceImpl implements FoodCalculationService {
     private BigDecimal calculate(BigDecimal baseValue, BigDecimal quantity) {
         return baseValue
                 .multiply(quantity)
-                .setScale(SCALE, RoundingMode.HALF_UP);
+                .divide(HUNDRED, SCALE, RoundingMode.HALF_UP);
     }
 }

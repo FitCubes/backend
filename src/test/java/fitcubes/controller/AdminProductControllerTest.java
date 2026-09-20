@@ -7,6 +7,7 @@ import fitcubes.dto.product.ProductDto;
 import fitcubes.dto.product.UpdateProductDto;
 import fitcubes.exception.EntityNotFoundException;
 import fitcubes.model.product.ProductCategory;
+import fitcubes.security.CustomAuthenticationEntryPoint;
 import fitcubes.security.JwtUtil;
 import fitcubes.security.TokenBlacklistService;
 import fitcubes.service.product.AdminProductService;
@@ -58,6 +59,9 @@ class AdminProductControllerTest {
     private AdminProductService adminProductService;
 
     @MockitoBean
+    private CustomAuthenticationEntryPoint authenticationEntryPoint;
+
+    @MockitoBean
     private JwtUtil jwtUtil;
 
     @MockitoBean
@@ -73,9 +77,9 @@ class AdminProductControllerTest {
     @BeforeEach
     void setUp() {
         ProductCategory category = ProductCategory.values()[0];
-        createProductDto = new CreateProductDto("Rice", category, 130, 0.3, 28.0, 2.7);
-        updateProductDto = new UpdateProductDto("Brown Rice", category, 140, 0.5, 29.0, 3.0);
-        productDto = new ProductDto(PRODUCT_ID, "Rice", category, 130, 0.3, 28.0, 2.7, 10.8);
+        createProductDto = new CreateProductDto("Rice", category, 130.0, 0.3, 28.0, 2.7);
+        updateProductDto = new UpdateProductDto("Brown Rice", category, 140.0, 0.5, 29.0, 3.0);
+        productDto = new ProductDto(PRODUCT_ID, "Rice", category, 130.0, 0.3, 28.0, 2.7, 10.8);
     }
 
     @Nested
@@ -104,7 +108,7 @@ class AdminProductControllerTest {
         @WithMockUser(roles = "ADMIN")
         void createProduct_blankName_returnsBadRequest() throws Exception {
             CreateProductDto invalidDto = new CreateProductDto(
-                    " ", createProductDto.category(), 130, 0.3, 28.0, 2.7);
+                    " ", createProductDto.category(), 130.0, 0.3, 28.0, 2.7);
 
             mockMvc.perform(post(BASE_URL)
                             .with(csrf())
@@ -120,7 +124,7 @@ class AdminProductControllerTest {
         @WithMockUser(roles = "ADMIN")
         void createProduct_negativeCalories_returnsBadRequest() throws Exception {
             CreateProductDto invalidDto = new CreateProductDto(
-                    "Rice", createProductDto.category(), -10, 0.3, 28.0, 2.7);
+                    "Rice", createProductDto.category(), -10.0, 0.3, 28.0, 2.7);
 
             mockMvc.perform(post(BASE_URL)
                             .with(csrf())

@@ -15,7 +15,6 @@ import fitcubes.model.foodentry.MealType;
 import fitcubes.model.foodentry.SourceType;
 import fitcubes.model.product.Product;
 import fitcubes.model.product.ProductCategory;
-import fitcubes.model.user.ActivityLevel;
 import fitcubes.model.user.Gender;
 import fitcubes.model.user.Goal;
 import fitcubes.model.user.User;
@@ -83,7 +82,7 @@ class DailySummaryIntegrationTest {
         user.setHeight(180);
         user.setCurrentWeight(80.0);
         user.setTargetWeight(75.0);
-        user.setActivityLevel(ActivityLevel.MODERATELY_ACTIVE);
+        user.setActivityLevel(1.55);
         user.setGoal(Goal.MAINTENANCE);
         return userRepository.save(user);
     }

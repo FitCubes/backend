@@ -5,9 +5,9 @@ import fitcubes.model.product.ProductCategory;
 public record UpdateProductDto(
         String name,
         ProductCategory category,
-        Integer calories,
-        Double fat,
-        Double carbohydrates,
-        Double protein
+        Double caloriesPer100g,
+        Double fatsPer100g,
+        Double carbsPer100g,
+        Double proteinPer100g
 ) {
 }

@@ -93,7 +93,7 @@ class FoodEntryIntegrationTest {
         return productRepository.save(product);
     }
 
-    private Recipe saveRecipeWithPerServingValues(BigDecimal caloriesPerServing) {
+    private Recipe saveRecipe() {
         Recipe recipe = new Recipe();
         recipe.setName("Chicken Soup");
         recipe.setCategory("Soup");
@@ -104,10 +104,7 @@ class FoodEntryIntegrationTest {
         recipe.setProteinPer100g(BigDecimal.valueOf(5));
         recipe.setCarbsPer100g(BigDecimal.valueOf(7.5));
         recipe.setFatsPer100g(BigDecimal.valueOf(2.5));
-        recipe.setCaloriesPerServing(caloriesPerServing);
-        recipe.setProteinPerServing(BigDecimal.valueOf(10));
-        recipe.setCarbsPerServing(BigDecimal.valueOf(15));
-        recipe.setFatsPerServing(BigDecimal.valueOf(5));
+        recipe.setCaloriesPerServing(BigDecimal.ZERO);
         return recipeRepository.save(recipe);
     }
 
@@ -118,7 +115,7 @@ class FoodEntryIntegrationTest {
         FoodEntryRequestDto request = new FoodEntryRequestDto(
                 SourceType.PRODUCT, egg.getId(), null, null, null,
                 null, null, null, null,
-                BigDecimal.valueOf(2), MealType.BREAKFAST, Instant.now()
+                BigDecimal.valueOf(200), MealType.BREAKFAST, Instant.now()
         );
 
         String responseJson = mockMvc.perform(post("/api/v1/food-entries")
@@ -145,13 +142,13 @@ class FoodEntryIntegrationTest {
     }
 
     @Test
-    void addFoodEntry_withProduct_fractionalQuantity_roundsCorrectly() throws Exception {
+    void addFoodEntry_withProduct_smallQuantity_roundsCorrectly() throws Exception {
         Product rice = saveProduct(130.0, 0.3, 2.7, 28.0);
 
         FoodEntryRequestDto request = new FoodEntryRequestDto(
                 SourceType.PRODUCT, rice.getId(), null, null, null,
                 null, null, null, null,
-                BigDecimal.valueOf(0.5), MealType.LUNCH, Instant.now()
+                BigDecimal.valueOf(50), MealType.LUNCH, Instant.now()
         );
 
         mockMvc.perform(post("/api/v1/food-entries")
@@ -168,7 +165,7 @@ class FoodEntryIntegrationTest {
         FoodEntryRequestDto request = new FoodEntryRequestDto(
                 SourceType.PRODUCT, 999999L, null, null, null,
                 null, null, null, null,
-                BigDecimal.ONE, MealType.BREAKFAST, Instant.now()
+                BigDecimal.valueOf(100), MealType.BREAKFAST, Instant.now()
         );
 
         mockMvc.perform(post("/api/v1/food-entries")
@@ -180,13 +177,13 @@ class FoodEntryIntegrationTest {
     }
 
     @Test
-    void addFoodEntry_withRecipe_multipliesCaloriesPerServingByQuantity() throws Exception {
-        Recipe soup = saveRecipeWithPerServingValues(BigDecimal.valueOf(500));
+    void addFoodEntry_withRecipe_calculatesPerHundredGrams() throws Exception {
+        Recipe soup = saveRecipe();
 
         FoodEntryRequestDto request = new FoodEntryRequestDto(
                 SourceType.RECIPE, null, soup.getId(), null, null,
                 null, null, null, null,
-                BigDecimal.valueOf(2), MealType.DINNER, Instant.now()
+                BigDecimal.valueOf(400), MealType.DINNER, Instant.now() // 400g
         );
 
         mockMvc.perform(post("/api/v1/food-entries")
@@ -195,7 +192,8 @@ class FoodEntryIntegrationTest {
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.calories").value(1000.0))
+                .andExpect(jsonPath("$.calories").value(250.0))
+                .andExpect(jsonPath("$.protein").value(20.0))
                 .andExpect(jsonPath("$.nameSnapshot").value("Chicken Soup"));
     }
 
@@ -225,7 +223,7 @@ class FoodEntryIntegrationTest {
         FoodEntryRequestDto createRequest = new FoodEntryRequestDto(
                 SourceType.PRODUCT, banana.getId(), null, null, null,
                 null, null, null, null,
-                BigDecimal.valueOf(1), MealType.SNACK, Instant.now()
+                BigDecimal.valueOf(100), MealType.SNACK, Instant.now()
         );
 
         String createResponse = mockMvc.perform(post("/api/v1/food-entries")
@@ -241,7 +239,7 @@ class FoodEntryIntegrationTest {
         FoodEntryRequestDto updateRequest = new FoodEntryRequestDto(
                 SourceType.PRODUCT, banana.getId(), null, null, null,
                 null, null, null, null,
-                BigDecimal.valueOf(3), MealType.SNACK, Instant.now()
+                BigDecimal.valueOf(300), MealType.SNACK, Instant.now() // 300g
         );
 
         mockMvc.perform(patch("/api/v1/food-entries/" + entryId)
@@ -254,7 +252,7 @@ class FoodEntryIntegrationTest {
 
         FoodEntry persisted = foodEntryRepository.findByIdAndUserId(entryId, USER_ID).orElseThrow();
         assertThat(persisted.getCalories()).isEqualByComparingTo(BigDecimal.valueOf(315.00));
-        assertThat(persisted.getQuantity()).isEqualByComparingTo(BigDecimal.valueOf(3));
+        assertThat(persisted.getQuantity()).isEqualByComparingTo(BigDecimal.valueOf(300));
     }
 
     @Test
@@ -264,7 +262,7 @@ class FoodEntryIntegrationTest {
         FoodEntryRequestDto request = new FoodEntryRequestDto(
                 SourceType.PRODUCT, apple.getId(), null, null, null,
                 null, null, null, null,
-                BigDecimal.ONE, MealType.SNACK, Instant.now()
+                BigDecimal.valueOf(100), MealType.SNACK, Instant.now()
         );
 
         String createResponse = mockMvc.perform(post("/api/v1/food-entries")
@@ -294,7 +292,7 @@ class FoodEntryIntegrationTest {
         FoodEntryRequestDto request = new FoodEntryRequestDto(
                 SourceType.PRODUCT, product.getId(), null, null, null,
                 null, null, null, null,
-                BigDecimal.ONE, MealType.LUNCH, Instant.now()
+                BigDecimal.valueOf(100), MealType.LUNCH, Instant.now()
         );
 
         String createResponse = mockMvc.perform(post("/api/v1/food-entries")

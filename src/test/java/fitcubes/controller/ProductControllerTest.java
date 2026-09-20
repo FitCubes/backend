@@ -25,6 +25,7 @@ import fitcubes.model.product.ProductCategory;
 import fitcubes.model.user.Role;
 import fitcubes.model.user.RoleName;
 import fitcubes.model.user.User;
+import fitcubes.security.CustomAuthenticationEntryPoint;
 import fitcubes.security.JwtUtil;
 import fitcubes.security.TokenBlacklistService;
 import fitcubes.service.product.ProductService;
@@ -64,6 +65,9 @@ public class ProductControllerTest {
     private ProductService productService;
 
     @MockitoBean
+    private CustomAuthenticationEntryPoint authenticationEntryPoint;
+
+    @MockitoBean
     private JwtUtil jwtUtil;
 
     @MockitoBean
@@ -84,7 +88,7 @@ public class ProductControllerTest {
         createProductDto = new CreateProductDto(
                 "Rice",
                 category,
-                130,
+                130.0,
                 0.3,
                 28.0,
                 2.7
@@ -93,7 +97,7 @@ public class ProductControllerTest {
         updateProductDto = new UpdateProductDto(
                 "Brown Rice",
                 category,
-                140,
+                140.0,
                 0.5,
                 29.0,
                 3.0
@@ -103,7 +107,7 @@ public class ProductControllerTest {
                 PRODUCT_ID,
                 "Rice",
                 category,
-                130,
+                130.0,
                 0.3,
                 28.0,
                 2.7,
@@ -155,7 +159,7 @@ public class ProductControllerTest {
             CreateProductDto invalidDto = new CreateProductDto(
                     " ",
                     createProductDto.category(),
-                    130,
+                    130.0,
                     0.3,
                     28.0,
                     2.7
@@ -176,7 +180,7 @@ public class ProductControllerTest {
             CreateProductDto invalidDto = new CreateProductDto(
                     "Rice",
                     createProductDto.category(),
-                    -10,
+                    -10.0,
                     0.3,
                     28.0,
                     2.7

@@ -3,6 +3,8 @@ package fitcubes.security;
 import fitcubes.dto.user.UserLoginRequestDto;
 import fitcubes.dto.user.UserLoginResponseDto;
 import fitcubes.dto.user.UserRegistrationRequestDto;
+import fitcubes.dto.user.UserSummaryDto;
+import fitcubes.exception.EntityNotFoundException;
 import fitcubes.exception.RegistrationException;
 import fitcubes.mapper.UserMapper;
 import fitcubes.model.user.Role;
@@ -34,8 +36,12 @@ public class AuthenticationService {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(requestDto.email(), requestDto.password()));
 
+        User user = userRepository.findByEmail(authentication.getName()).orElseThrow(
+                () -> new EntityNotFoundException(
+                        "User with email: " + authentication.getName() + " not found"));
+
         String token = jwtUtil.generateToken(authentication.getName());
-        return new UserLoginResponseDto(token);
+        return new UserLoginResponseDto(token, toSummaryDto(user));
     }
 
     public UserLoginResponseDto register(UserRegistrationRequestDto requestDto) {
@@ -54,7 +60,7 @@ public class AuthenticationService {
         User savedUser = userRepository.save(user);
 
         String token = jwtUtil.generateToken(savedUser.getEmail());
-        return new UserLoginResponseDto(token);
+        return new UserLoginResponseDto(token, toSummaryDto(savedUser));
     }
 
     public void logout(String authHeader) {
@@ -65,5 +71,17 @@ public class AuthenticationService {
         String token = authHeader.substring(7);
         long remainingTimeMs = jwtUtil.getRemainingExpirationTime(token);
         tokenBlacklistService.blacklistToken(token, remainingTimeMs);
+    }
+
+    private UserSummaryDto toSummaryDto(User user) {
+        return new UserSummaryDto(user.getId(), user.getEmail(), buildName(user));
+    }
+
+    private String buildName(User user) {
+        if (user.getFirstName() == null && user.getLastName() == null) {
+            return null;
+        }
+        return (user.getFirstName() != null ? user.getFirstName() : "")
+                + (user.getLastName() != null ? " " + user.getLastName() : "");
     }
 }

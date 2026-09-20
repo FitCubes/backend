@@ -2,6 +2,7 @@ package fitcubes.controller;
 
 import fitcubes.dto.recipe.CreateRecipeDto;
 import fitcubes.dto.recipe.RecipeDto;
+import fitcubes.dto.recipe.RecipeSummaryDto;
 import fitcubes.dto.recipe.UpdateRecipeDto;
 import fitcubes.service.recipe.AdminRecipeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -65,7 +66,7 @@ public class AdminRecipeController {
     )
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public Page<RecipeDto> getAllRecipes(@ParameterObject Pageable pageable) {
+    public Page<RecipeSummaryDto> getAllRecipes(@ParameterObject Pageable pageable) {
         return adminRecipeService.getAllRecipes(pageable);
     }
 

@@ -10,7 +10,6 @@ import fitcubes.model.foodentry.MealType;
 import fitcubes.model.foodentry.SourceType;
 import fitcubes.model.product.Product;
 import fitcubes.model.product.ProductCategory;
-import fitcubes.model.user.ActivityLevel;
 import fitcubes.model.user.Gender;
 import fitcubes.model.user.Goal;
 import fitcubes.model.user.User;
@@ -76,7 +75,7 @@ class WeightPredictionIntegrationTest {
         user.setHeight(178);
         user.setCurrentWeight(85.0);
         user.setTargetWeight(78.0);
-        user.setActivityLevel(ActivityLevel.SEDENTARY);
+        user.setActivityLevel(1.2);
         user.setGoal(Goal.WEIGHT_LOSS);
         return userRepository.save(user);
     }

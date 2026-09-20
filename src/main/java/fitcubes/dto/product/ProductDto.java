@@ -6,15 +6,15 @@ public record ProductDto(
         Long id,
         String name,
         ProductCategory category,
-        Integer calories,
-        Double fat,
-        Double carbohydrates,
-        Double protein,
-        Double proteinCalories
+        Double caloriesPer100g,
+        Double fatsPer100g,
+        Double carbsPer100g,
+        Double proteinPer100g,
+        Double proteinCaloriesPer100g
 ) {
     public ProductDto {
-        if (proteinCalories == null) {
-            proteinCalories = (protein != null) ? protein * 4.0 : 0.0;
+        if (proteinCaloriesPer100g == null) {
+            proteinCaloriesPer100g = (proteinPer100g != null) ? proteinPer100g * 4.0 : 0.0;
         }
     }
 }

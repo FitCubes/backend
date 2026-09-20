@@ -5,20 +5,17 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-import fitcubes.dto.user.UserDto;
 import fitcubes.dto.user.UserLoginRequestDto;
 import fitcubes.dto.user.UserLoginResponseDto;
 import fitcubes.dto.user.UserRegistrationRequestDto;
 import fitcubes.exception.RegistrationException;
 import fitcubes.mapper.UserMapper;
-import fitcubes.model.user.ActivityLevel;
 import fitcubes.model.user.Gender;
 import fitcubes.model.user.Goal;
 import fitcubes.model.user.Role;
@@ -85,8 +82,15 @@ class AuthenticationServiceTest {
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 "john@example.com", "password123");
 
+        User user = new User();
+        user.setId(1L);
+        user.setEmail("john@example.com");
+        user.setFirstName("John");
+        user.setLastName("Doe");
+
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenReturn(authentication);
+        when(userRepository.findByEmail("john@example.com")).thenReturn(Optional.of(user));
         when(jwtUtil.generateToken("john@example.com")).thenReturn("generated-jwt-token");
 
         // when
@@ -95,6 +99,8 @@ class AuthenticationServiceTest {
         // then
         assertThat(response).isNotNull();
         assertThat(response.token()).isEqualTo("generated-jwt-token");
+        assertThat(response.user().email()).isEqualTo("john@example.com");
+        assertThat(response.user().name()).isEqualTo("John Doe");
 
         verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
         verify(jwtUtil).generateToken("john@example.com");
@@ -108,8 +114,15 @@ class AuthenticationServiceTest {
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 "jane@example.com", "secret");
 
+        User user = new User();
+        user.setId(2L);
+        user.setEmail("jane@example.com");
+        user.setFirstName("Jane");
+        user.setLastName("Smith");
+
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenReturn(authentication);
+        when(userRepository.findByEmail("jane@example.com")).thenReturn(Optional.of(user));
         when(jwtUtil.generateToken(anyString())).thenReturn("token");
 
         // when
@@ -152,7 +165,7 @@ class AuthenticationServiceTest {
                 180,
                 80.0,
                 75.0,
-                ActivityLevel.MODERATELY_ACTIVE,
+                1.55,
                 Goal.WEIGHT_LOSS);
 
         User userEntity = new User();
@@ -200,7 +213,7 @@ class AuthenticationServiceTest {
                 170,
                 65.0,
                 60.0,
-                ActivityLevel.LIGHTLY_ACTIVE,
+                1.375,
                 Goal.MAINTENANCE);
 
         when(userRepository.existsByEmail("existing@example.com")).thenReturn(true);
@@ -229,7 +242,7 @@ class AuthenticationServiceTest {
                 180,
                 80.0,
                 75.0,
-                ActivityLevel.MODERATELY_ACTIVE,
+                1.55,
                 Goal.WEIGHT_LOSS);
 
         when(userRepository.existsByEmail("new@example.com")).thenReturn(false);
@@ -242,6 +255,90 @@ class AuthenticationServiceTest {
 
         verify(userRepository, never()).save(any());
         verifyNoInteractions(userMapper, passwordEncoder);
+    }
+
+    @Test
+    @DisplayName("Should return null name when firstName and lastName are not set")
+    void register_NoNamesProvided_ReturnsNullName() {
+        // given
+        UserRegistrationRequestDto requestDto = new UserRegistrationRequestDto(
+                "new@example.com",
+                "rawPassword",
+                "rawPassword",
+                null,
+                null,
+                Gender.MALE,
+                25,
+                180,
+                80.0,
+                75.0,
+                1.55,
+                Goal.WEIGHT_LOSS);
+
+        User userEntity = new User();
+        Role userRole = new Role();
+        userRole.setName(RoleName.USER);
+
+        User savedUser = new User();
+        savedUser.setId(1L);
+        savedUser.setEmail("new@example.com");
+        savedUser.setFirstName(null);
+        savedUser.setLastName(null);
+
+        when(userRepository.existsByEmail("new@example.com")).thenReturn(false);
+        when(userMapper.toEntity(requestDto)).thenReturn(userEntity);
+        when(roleRepository.findByName(RoleName.USER)).thenReturn(Optional.of(userRole));
+        when(passwordEncoder.encode("rawPassword")).thenReturn("encodedPassword");
+        when(userRepository.save(userEntity)).thenReturn(savedUser);
+        when(jwtUtil.generateToken("new@example.com")).thenReturn("generated-jwt-token");
+
+        // when
+        UserLoginResponseDto result = authenticationService.register(requestDto);
+
+        // then
+        assertThat(result.user().name()).isNull();
+    }
+
+    @Test
+    @DisplayName("Should return only firstName when lastName is not set")
+    void register_OnlyFirstNameProvided_ReturnsFirstNameWithoutTrailingSpace() {
+        // given
+        UserRegistrationRequestDto requestDto = new UserRegistrationRequestDto(
+                "new@example.com",
+                "rawPassword",
+                "rawPassword",
+                "Jan",
+                null,
+                Gender.MALE,
+                25,
+                180,
+                80.0,
+                75.0,
+                1.55,
+                Goal.WEIGHT_LOSS);
+
+        User userEntity = new User();
+        Role userRole = new Role();
+        userRole.setName(RoleName.USER);
+
+        User savedUser = new User();
+        savedUser.setId(1L);
+        savedUser.setEmail("new@example.com");
+        savedUser.setFirstName("Jan");
+        savedUser.setLastName(null);
+
+        when(userRepository.existsByEmail("new@example.com")).thenReturn(false);
+        when(userMapper.toEntity(requestDto)).thenReturn(userEntity);
+        when(roleRepository.findByName(RoleName.USER)).thenReturn(Optional.of(userRole));
+        when(passwordEncoder.encode("rawPassword")).thenReturn("encodedPassword");
+        when(userRepository.save(userEntity)).thenReturn(savedUser);
+        when(jwtUtil.generateToken("new@example.com")).thenReturn("generated-jwt-token");
+
+        // when
+        UserLoginResponseDto result = authenticationService.register(requestDto);
+
+        // then
+        assertThat(result.user().name()).isEqualTo("Jan");
     }
 
     @Test

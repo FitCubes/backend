@@ -51,9 +51,7 @@ public class FoodEntryServiceImpl implements FoodEntryService {
                                                 FoodEntryRequestDto requestDto) {
         validateRequest(requestDto);
 
-        FoodEntry entry = foodEntryRepository.findByIdAndUserId(entryId, userId)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "Food entry not found: " + entryId));
+        FoodEntry entry = getFoodEntryOrThrow(userId, entryId);
 
         entry.setSourceType(requestDto.sourceType());
         entry.setQuantity(requestDto.quantity());
@@ -69,23 +67,19 @@ public class FoodEntryServiceImpl implements FoodEntryService {
     @Override
     @Transactional
     public void deleteFoodEntry(Long userId, Long entryId) {
-        FoodEntry entry = foodEntryRepository.findByIdAndUserId(entryId, userId)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "Food entry not found: " + entryId));
-
+        FoodEntry entry = getFoodEntryOrThrow(userId, entryId);
         foodEntryRepository.delete(entry);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public FoodEntryResponseDto getFoodEntry(Long userId, Long entryId) {
-        FoodEntry entry = foodEntryRepository.findByIdAndUserId(entryId, userId)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "Food entry not found: " + entryId));
-
+        FoodEntry entry = getFoodEntryOrThrow(userId, entryId);
         return foodEntryMapper.toDto(entry);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<FoodEntryResponseDto> getFoodEntries(Long userId, Instant from, Instant to,
                                                      Pageable pageable) {
         return foodEntryRepository
@@ -157,13 +151,14 @@ public class FoodEntryServiceImpl implements FoodEntryService {
         entry.setRecipeId(recipe.getId());
         entry.setProductId(null);
         entry.setNameSnapshot(recipe.getName());
-        entry.setCalories(recipe.getCaloriesPerServing().multiply(requestDto.quantity()));
-        entry.setProtein(recipe.getProteinPerServing() == null ? null
-                : recipe.getProteinPerServing().multiply(requestDto.quantity()));
-        entry.setCarbs(recipe.getCarbsPerServing() == null ? null
-                : recipe.getCarbsPerServing().multiply(requestDto.quantity()));
-        entry.setFat(recipe.getFatsPerServing() == null ? null
-                : recipe.getFatsPerServing().multiply(requestDto.quantity()));
+        entry.setCalories(calculationService.calculateMacro(
+                recipe.getCaloriesPer100g(), requestDto.quantity()));
+        entry.setProtein(calculationService.calculateMacro(
+                recipe.getProteinPer100g(), requestDto.quantity()));
+        entry.setCarbs(calculationService.calculateMacro(
+                recipe.getCarbsPer100g(), requestDto.quantity()));
+        entry.setFat(calculationService.calculateMacro(
+                recipe.getFatsPer100g(), requestDto.quantity()));
     }
 
     private void applyCustom(FoodEntry entry, FoodEntryRequestDto requestDto) {
@@ -174,5 +169,11 @@ public class FoodEntryServiceImpl implements FoodEntryService {
         entry.setProtein(requestDto.customProtein());
         entry.setCarbs(requestDto.customCarbs());
         entry.setFat(requestDto.customFat());
+    }
+
+    private FoodEntry getFoodEntryOrThrow(Long userId, Long entryId) {
+        return foodEntryRepository.findByIdAndUserId(entryId, userId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Food entry not found: " + entryId));
     }
 }

@@ -1,0 +1,16 @@
+databaseChangeLog:
+  - changeSet:
+      id: 020-fix-activity-level-to-double-precision
+      author: senjars
+      changes:
+        - sql:
+            sql: >
+              ALTER TABLE users
+              ALTER COLUMN activity_level TYPE DOUBLE PRECISION
+              USING activity_level::DOUBLE PRECISION;
+      rollback:
+        - sql:
+            sql: >
+              ALTER TABLE users
+              ALTER COLUMN activity_level TYPE NUMERIC
+              USING activity_level::NUMERIC;

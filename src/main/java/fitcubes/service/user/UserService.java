@@ -1,9 +1,11 @@
 package fitcubes.service.user;
 
-import fitcubes.dto.user.UserDto;
+import fitcubes.dto.user.UserProfileDto;
 import fitcubes.dto.user.UserProfileUpdateRequestDto;
 
 public interface UserService {
 
-    UserDto updateProfile(String email, UserProfileUpdateRequestDto requestDto);
+    UserProfileDto getProfile(String email);
+
+    UserProfileDto updateProfile(String email, UserProfileUpdateRequestDto requestDto);
 }

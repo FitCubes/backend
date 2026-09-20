@@ -1,5 +1,7 @@
 package fitcubes.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fitcubes.security.CustomAuthenticationEntryPoint;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,6 +26,12 @@ public class TestSecurityConfig {
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
+    }
+
+    @Bean
+    public CustomAuthenticationEntryPoint customAuthenticationEntryPoint(
+            ObjectMapper objectMapper) {
+        return new CustomAuthenticationEntryPoint(objectMapper);
     }
 
     @Bean

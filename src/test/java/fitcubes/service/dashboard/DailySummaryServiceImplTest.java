@@ -1,4 +1,4 @@
-package fitcubes.service;
+package fitcubes.service.dashboard;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -10,7 +10,6 @@ import fitcubes.model.user.User;
 import fitcubes.repository.ExerciseEntryRepository;
 import fitcubes.repository.FoodEntryRepository;
 import fitcubes.repository.UserRepository;
-import fitcubes.service.dashboard.CalorieCalculationService;
 import fitcubes.service.dashboard.impl.DailySummaryServiceImpl;
 import java.math.BigDecimal;
 import java.time.Instant;

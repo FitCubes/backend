@@ -5,9 +5,11 @@ import fitcubes.config.TestSecurityConfig;
 import fitcubes.dto.recipe.CreateRecipeDto;
 import fitcubes.dto.recipe.RecipeDto;
 import fitcubes.dto.recipe.RecipeIngredientDto;
+import fitcubes.dto.recipe.RecipeSummaryDto;
 import fitcubes.dto.recipe.UpdateRecipeDto;
 import fitcubes.exception.EntityNotFoundException;
 import fitcubes.model.recipe.RecipeCategory;
+import fitcubes.security.CustomAuthenticationEntryPoint;
 import fitcubes.security.JwtUtil;
 import fitcubes.security.TokenBlacklistService;
 import fitcubes.service.recipe.AdminRecipeService;
@@ -66,11 +68,15 @@ class AdminRecipeControllerTest {
     private UserDetailsService userDetailsService;
 
     @MockitoBean
+    private CustomAuthenticationEntryPoint authenticationEntryPoint;
+
+    @MockitoBean
     private TokenBlacklistService tokenBlacklistService;
 
     private CreateRecipeDto createRecipeDto;
     private UpdateRecipeDto updateRecipeDto;
     private RecipeDto recipeDto;
+    private RecipeSummaryDto recipeSummaryDto;
 
     @BeforeEach
     void setUp() {
@@ -119,8 +125,23 @@ class AdminRecipeControllerTest {
                 6.0,
                 25.0,
                 3.0,
-                24.0, // Wyliczone proteinCaloriesPer100g (6.0 * 4.0)
+                24.0,
                 List.of(ingredientDto)
+        );
+
+        recipeSummaryDto = new RecipeSummaryDto(
+                RECIPE_ID,
+                100L,
+                "Oatmeal",
+                RecipeCategory.BREAKFAST,
+                1,
+                100.0,
+                250.0,
+                150.0,
+                6.0,
+                25.0,
+                3.0,
+                1
         );
     }
 
@@ -224,14 +245,14 @@ class AdminRecipeControllerTest {
         @DisplayName("getAllRecipes_asAdmin_returnsPage")
         @WithMockUser(roles = "ADMIN")
         void getAllRecipes_asAdmin_returnsPage() throws Exception {
-            Page<RecipeDto> page = new PageImpl<>(List.of(recipeDto));
+            Page<RecipeSummaryDto> page = new PageImpl<>(List.of(recipeSummaryDto));
             given(adminRecipeService.getAllRecipes(any(Pageable.class))).willReturn(page);
 
             mockMvc.perform(get(BASE_URL))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.content[0].id").value(RECIPE_ID))
                     .andExpect(jsonPath("$.content[0].name").value("Oatmeal"))
-                    .andExpect(jsonPath("$.content[0].proteinCaloriesPer100g").value(24.0));
+                    .andExpect(jsonPath("$.content[0].ingredientsCount").value(1));
         }
 
         @Test

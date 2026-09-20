@@ -2,6 +2,7 @@ package fitcubes.service.recipe.impl;
 
 import fitcubes.dto.recipe.CreateRecipeDto;
 import fitcubes.dto.recipe.RecipeDto;
+import fitcubes.dto.recipe.RecipeSummaryDto;
 import fitcubes.dto.recipe.UpdateRecipeDto;
 import fitcubes.exception.EntityNotFoundException;
 import fitcubes.mapper.RecipeMapper;
@@ -28,16 +29,13 @@ public class AdminRecipeServiceImpl implements AdminRecipeService {
     public RecipeDto save(CreateRecipeDto createRecipeDto) {
         Recipe recipe = recipeMapper.toEntity(createRecipeDto);
         Recipe savedRecipe = recipeRepository.save(recipe);
-
         return recipeMapper.toDto(savedRecipe);
     }
 
     @Override
     @Transactional(readOnly = true)
     public RecipeDto getRecipeById(Long recipeId) {
-        Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(
-                () -> new EntityNotFoundException("Not found"));
-
+        Recipe recipe = getRecipeOrThrow(recipeId);
         return recipeMapper.toDto(recipe);
     }
 
@@ -45,9 +43,7 @@ public class AdminRecipeServiceImpl implements AdminRecipeService {
     @Transactional
     @CacheEvict(value = "recipes", key = "#recipeId")
     public void deleteById(Long recipeId) {
-        Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(
-                () -> new EntityNotFoundException("Not found"));
-
+        Recipe recipe = getRecipeOrThrow(recipeId);
         recipeRepository.delete(recipe);
     }
 
@@ -55,9 +51,7 @@ public class AdminRecipeServiceImpl implements AdminRecipeService {
     @Transactional
     @CachePut(value = "recipes", key = "#recipeId")
     public RecipeDto update(UpdateRecipeDto updateRecipeDto, Long recipeId) {
-        Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(
-                () -> new EntityNotFoundException("Not found"));
-
+        Recipe recipe = getRecipeOrThrow(recipeId);
         recipeMapper.updateRecipeDto(updateRecipeDto, recipe);
         Recipe savedRecipe = recipeRepository.save(recipe);
 
@@ -66,7 +60,12 @@ public class AdminRecipeServiceImpl implements AdminRecipeService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<RecipeDto> getAllRecipes(Pageable pageable) {
-        return recipeRepository.findAll(pageable).map(recipeMapper::toDto);
+    public Page<RecipeSummaryDto> getAllRecipes(Pageable pageable) {
+        return recipeRepository.findAll(pageable).map(recipeMapper::toSummaryDto);
+    }
+
+    private Recipe getRecipeOrThrow(Long recipeId) {
+        return recipeRepository.findById(recipeId).orElseThrow(
+                () -> new EntityNotFoundException("Recipe with id:" + recipeId + " not found"));
     }
 }

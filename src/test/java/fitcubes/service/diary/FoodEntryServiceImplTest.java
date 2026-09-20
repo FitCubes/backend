@@ -1,4 +1,4 @@
-package fitcubes.service;
+package fitcubes.service.diary;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -152,10 +152,10 @@ class FoodEntryServiceImplTest {
         Recipe recipe = new Recipe();
         recipe.setId(5L);
         recipe.setName("Chicken soup");
-        recipe.setCaloriesPerServing(BigDecimal.valueOf(500));
-        recipe.setProteinPerServing(BigDecimal.valueOf(40));
-        recipe.setCarbsPerServing(BigDecimal.valueOf(60));
-        recipe.setFatsPerServing(BigDecimal.valueOf(20));
+        recipe.setCaloriesPer100g(BigDecimal.valueOf(100));
+        recipe.setProteinPer100g(BigDecimal.valueOf(8));
+        recipe.setCarbsPer100g(BigDecimal.valueOf(12));
+        recipe.setFatsPer100g(BigDecimal.valueOf(4));
 
         FoodEntry mappedEntity = newFoodEntry();
         FoodEntry savedEntity = newFoodEntry();
@@ -163,6 +163,7 @@ class FoodEntryServiceImplTest {
 
         when(foodEntryMapper.toEntity(request)).thenReturn(mappedEntity);
         when(recipeRepository.findById(5L)).thenReturn(Optional.of(recipe));
+        when(calculationService.calculateMacro(any(), any())).thenReturn(BigDecimal.valueOf(100));
         when(foodEntryRepository.save(mappedEntity)).thenReturn(savedEntity);
         when(foodEntryMapper.toDto(savedEntity)).thenReturn(expectedDto);
 
@@ -172,7 +173,12 @@ class FoodEntryServiceImplTest {
         assertThat(mappedEntity.getRecipeId()).isEqualTo(5L);
         assertThat(mappedEntity.getProductId()).isNull();
         assertThat(mappedEntity.getNameSnapshot()).isEqualTo("Chicken soup");
-        assertThat(mappedEntity.getCalories()).isEqualByComparingTo(BigDecimal.valueOf(500));
+        assertThat(mappedEntity.getCalories()).isEqualByComparingTo(BigDecimal.valueOf(100));
+
+        verify(calculationService).calculateMacro(recipe.getCaloriesPer100g(), request.quantity());
+        verify(calculationService).calculateMacro(recipe.getProteinPer100g(), request.quantity());
+        verify(calculationService).calculateMacro(recipe.getCarbsPer100g(), request.quantity());
+        verify(calculationService).calculateMacro(recipe.getFatsPer100g(), request.quantity());
     }
 
     @Test

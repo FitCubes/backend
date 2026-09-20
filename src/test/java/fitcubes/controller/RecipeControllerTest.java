@@ -5,6 +5,7 @@ import fitcubes.config.TestSecurityConfig;
 import fitcubes.dto.recipe.CreateRecipeDto;
 import fitcubes.dto.recipe.RecipeDto;
 import fitcubes.dto.recipe.RecipeIngredientDto;
+import fitcubes.dto.recipe.RecipeSummaryDto;
 import fitcubes.dto.recipe.UpdateRecipeDto;
 import fitcubes.exception.AccessDeniedException;
 import fitcubes.exception.EntityNotFoundException;
@@ -12,6 +13,7 @@ import fitcubes.model.recipe.RecipeCategory;
 import fitcubes.model.user.Role;
 import fitcubes.model.user.RoleName;
 import fitcubes.model.user.User;
+import fitcubes.security.CustomAuthenticationEntryPoint;
 import fitcubes.security.JwtUtil;
 import fitcubes.security.TokenBlacklistService;
 import fitcubes.service.recipe.RecipeService;
@@ -71,6 +73,9 @@ public class RecipeControllerTest {
     private JwtUtil jwtUtil;
 
     @MockitoBean
+    private CustomAuthenticationEntryPoint authenticationEntryPoint;
+
+    @MockitoBean
     private UserDetailsService userDetailsService;
 
     @MockitoBean
@@ -79,6 +84,7 @@ public class RecipeControllerTest {
     private CreateRecipeDto createRecipeDto;
     private UpdateRecipeDto updateRecipeDto;
     private RecipeDto recipeDto;
+    private RecipeSummaryDto recipeSummaryDto;
     private User user;
 
     @BeforeEach
@@ -138,6 +144,21 @@ public class RecipeControllerTest {
                 3.0,
                 24.0,
                 List.of(ingredientDto)
+        );
+
+        recipeSummaryDto = new RecipeSummaryDto(
+                RECIPE_ID,
+                USER_ID,
+                "Oatmeal",
+                RecipeCategory.BREAKFAST,
+                1,
+                100.0,
+                250.0,
+                150.0,
+                6.0,
+                25.0,
+                3.0,
+                1
         );
 
         user = new User();
@@ -240,7 +261,7 @@ public class RecipeControllerTest {
         @Test
         @DisplayName("getAllRecipes_asUser_returnsPage")
         void getAllRecipes_asUser_returnsPage() throws Exception {
-            Page<RecipeDto> page = new PageImpl<>(List.of(recipeDto));
+            Page<RecipeSummaryDto> page = new PageImpl<>(List.of(recipeSummaryDto));
 
             given(recipeService.getAllRecipes(
                     any(Pageable.class),
@@ -253,7 +274,8 @@ public class RecipeControllerTest {
                             .with(authentication(userAuthentication())))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.content[0].id").value(RECIPE_ID))
-                    .andExpect(jsonPath("$.content[0].proteinCaloriesPer100g").value(24.0));
+                    .andExpect(jsonPath("$.content[0].caloriesPer100g").value(150.0))
+                    .andExpect(jsonPath("$.content[0].ingredientsCount").value(1));
 
             verify(recipeService).getAllRecipes(
                     any(Pageable.class),

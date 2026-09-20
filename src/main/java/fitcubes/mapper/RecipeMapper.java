@@ -2,10 +2,12 @@ package fitcubes.mapper;
 
 import fitcubes.dto.recipe.CreateRecipeDto;
 import fitcubes.dto.recipe.RecipeDto;
+import fitcubes.dto.recipe.RecipeSummaryDto;
 import fitcubes.dto.recipe.UpdateRecipeDto;
 import fitcubes.model.recipe.Recipe;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
@@ -22,6 +24,11 @@ public interface RecipeMapper {
     Recipe toEntity(CreateRecipeDto createRecipeDto);
 
     RecipeDto toDto(Recipe recipe);
+
+    @Mapping(target = "ingredientsCount",
+            expression = "java(recipe.getIngredients() == null "
+                    + "? 0 : recipe.getIngredients().size())")
+    RecipeSummaryDto toSummaryDto(Recipe recipe);
 
     @AfterMapping
     default void linkIngredientsToRecipe(@MappingTarget Recipe recipe) {

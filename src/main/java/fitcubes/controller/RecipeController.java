@@ -2,6 +2,7 @@ package fitcubes.controller;
 
 import fitcubes.dto.recipe.CreateRecipeDto;
 import fitcubes.dto.recipe.RecipeDto;
+import fitcubes.dto.recipe.RecipeSummaryDto;
 import fitcubes.dto.recipe.UpdateRecipeDto;
 import fitcubes.model.user.User;
 import fitcubes.service.recipe.RecipeService;
@@ -65,9 +66,9 @@ public class RecipeController {
     )
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public Page<RecipeDto> getAllRecipes(@ParameterObject Pageable pageable,
-                                         @RequestParam(required = false) String category,
-                                         @AuthenticationPrincipal User user) {
+    public Page<RecipeSummaryDto> getAllRecipes(@ParameterObject Pageable pageable,
+                                                @RequestParam(required = false) String category,
+                                                @AuthenticationPrincipal User user) {
         return recipeService.getAllRecipes(pageable, category, user.getId());
     }
 

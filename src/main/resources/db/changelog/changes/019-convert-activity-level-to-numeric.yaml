@@ -1,0 +1,30 @@
+databaseChangeLog:
+  - changeSet:
+      id: 019-convert-activity-level-to-numeric
+      author: senjars
+      changes:
+        - sql:
+            sql: >
+              ALTER TABLE users
+              ALTER COLUMN activity_level TYPE NUMERIC
+              USING CASE activity_level
+                  WHEN 'SEDENTARY' THEN 1.2
+                  WHEN 'LIGHTLY_ACTIVE' THEN 1.375
+                  WHEN 'MODERATELY_ACTIVE' THEN 1.55
+                  WHEN 'VERY_ACTIVE' THEN 1.725
+                  WHEN 'EXTRA_ACTIVE' THEN 1.9
+                  ELSE NULL
+              END;
+      rollback:
+        - sql:
+            sql: >
+              ALTER TABLE users
+              ALTER COLUMN activity_level TYPE VARCHAR(20)
+              USING CASE
+                  WHEN activity_level = 1.2 THEN 'SEDENTARY'
+                  WHEN activity_level = 1.375 THEN 'LIGHTLY_ACTIVE'
+                  WHEN activity_level = 1.55 THEN 'MODERATELY_ACTIVE'
+                  WHEN activity_level = 1.725 THEN 'VERY_ACTIVE'
+                  WHEN activity_level = 1.9 THEN 'EXTRA_ACTIVE'
+                  ELSE NULL
+              END;
