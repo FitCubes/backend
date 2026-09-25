@@ -23,8 +23,10 @@ public interface RecipeMapper {
 
     Recipe toEntity(CreateRecipeDto createRecipeDto);
 
+    @Mapping(target = "userId", source = "user.id")
     RecipeDto toDto(Recipe recipe);
 
+    @Mapping(target = "userId", source = "user.id")
     @Mapping(target = "ingredientsCount",
             expression = "java(recipe.getIngredients() == null "
                     + "? 0 : recipe.getIngredients().size())")
