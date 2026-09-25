@@ -39,3 +39,5 @@ databaseChangeLog:
       file: db/changelog/changes/019-convert-activity-level-to-numeric.yaml
   - include:
       file: db/changelog/changes/020-fix-activity-level-to-double-precision.yaml
+  - include:
+      file: db/changelog/changes/021-normalize-exercise-category-casing.yaml

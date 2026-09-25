@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: 021-normalize-exercise-category-casing
+      author: senjars
+      changes:
+        - sql:
+            sql: UPDATE exercises SET category = UPPER(category);
+      rollback:
+        - empty
