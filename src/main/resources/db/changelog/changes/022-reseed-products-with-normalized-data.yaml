@@ -5,7 +5,10 @@ databaseChangeLog:
       context: "!test"
       changes:
         - sql:
-            sql: DELETE FROM products WHERE user_id IS NULL;
+            sql: >
+              DELETE FROM products
+              WHERE user_id IS NULL
+              AND id NOT IN (SELECT DISTINCT product_id FROM food_entries WHERE product_id IS NOT NULL);
         - loadData:
             tableName: products
             file: "../data/products_v2.csv"
