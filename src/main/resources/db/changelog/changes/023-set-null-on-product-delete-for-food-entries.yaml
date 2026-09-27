@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: 023-set-null-on-product-delete-for-food-entries
+      author: senjars
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: food_entries
+            constraintName: fk_food_entries_product
+        - addForeignKeyConstraint:
+            baseTableName: food_entries
+            baseColumnNames: product_id
+            constraintName: fk_food_entries_product
+            referencedTableName: products
+            referencedColumnNames: id
+            onDelete: SET NULL
+      rollback:
+        - dropForeignKeyConstraint:
+            baseTableName: food_entries
+            constraintName: fk_food_entries_product
+        - addForeignKeyConstraint:
+            baseTableName: food_entries
+            baseColumnNames: product_id
+            constraintName: fk_food_entries_product
+            referencedTableName: products
+            referencedColumnNames: id

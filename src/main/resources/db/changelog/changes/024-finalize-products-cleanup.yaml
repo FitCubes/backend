@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - changeSet:
+      id: 024-finalize-products-cleanup
+      author: senjars
+      context: "!test"
+      changes:
+        - sql:
+            sql: DELETE FROM products WHERE user_id IS NULL;
+      rollback:
+        - empty
