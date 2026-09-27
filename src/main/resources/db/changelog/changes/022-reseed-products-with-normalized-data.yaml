@@ -1,0 +1,40 @@
+databaseChangeLog:
+  - changeSet:
+      id: 022-reseed-products-with-normalized-data
+      author: senjars
+      context: "!test"
+      changes:
+        - sql:
+            sql: DELETE FROM products WHERE user_id IS NULL;
+        - loadData:
+            tableName: products
+            file: "../data/products_v2.csv"
+            relativeToChangelogFile: true
+            separator: ","
+            columns:
+              - column:
+                  header: "name"
+                  name: "name"
+                  type: "STRING"
+              - column:
+                  header: "category"
+                  name: "category"
+                  type: "STRING"
+              - column:
+                  header: "calories"
+                  name: "calories"
+                  type: "NUMERIC"
+              - column:
+                  header: "fat"
+                  name: "fat"
+                  type: "NUMERIC"
+              - column:
+                  header: "protein"
+                  name: "protein"
+                  type: "NUMERIC"
+              - column:
+                  header: "carbohydrates"
+                  name: "carbohydrates"
+                  type: "NUMERIC"
+      rollback:
+        - empty
