@@ -5,6 +5,12 @@ databaseChangeLog:
       context: "!test"
       changes:
         - sql:
+            sql: >
+              UPDATE food_entries
+              SET source_type = 'CUSTOM'
+              WHERE source_type = 'PRODUCT'
+              AND product_id IN (SELECT id FROM products WHERE user_id IS NULL);
+        - sql:
             sql: DELETE FROM products WHERE user_id IS NULL;
       rollback:
         - empty
