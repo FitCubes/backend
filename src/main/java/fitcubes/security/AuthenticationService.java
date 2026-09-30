@@ -7,13 +7,26 @@ import fitcubes.dto.user.UserSummaryDto;
 import fitcubes.exception.EntityNotFoundException;
 import fitcubes.exception.RegistrationException;
 import fitcubes.mapper.UserMapper;
+import fitcubes.model.user.PasswordResetToken;
 import fitcubes.model.user.Role;
 import fitcubes.model.user.RoleName;
 import fitcubes.model.user.User;
+import fitcubes.repository.PasswordResetTokenRepository;
 import fitcubes.repository.RoleRepository;
 import fitcubes.repository.UserRepository;
+import fitcubes.service.email.EmailService;
+import jakarta.transaction.Transactional;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Base64;
+import java.util.HexFormat;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -31,6 +44,10 @@ public class AuthenticationService {
     private final UserMapper userMapper;
     private final AuthenticationManager authenticationManager;
     private final TokenBlacklistService tokenBlacklistService;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
+    private final EmailService emailService;
+    @Value("${app.frontend-url}")
+    private String frontendUrl;
 
     public UserLoginResponseDto login(UserLoginRequestDto requestDto) {
         Authentication authentication = authenticationManager.authenticate(
@@ -83,5 +100,62 @@ public class AuthenticationService {
         }
         return (user.getFirstName() != null ? user.getFirstName() : "")
                 + (user.getLastName() != null ? " " + user.getLastName() : "");
+    }
+
+    public void forgotPassword(String email) {
+        String normalizedEmail = email.toLowerCase();
+        userRepository.findByEmail(normalizedEmail).ifPresent(user -> {
+            String rawToken = generateSecureToken();
+            String tokenHash = hashToken(rawToken);
+
+            PasswordResetToken resetToken = new PasswordResetToken();
+            resetToken.setUserId(user.getId());
+            resetToken.setTokenHash(tokenHash);
+            resetToken.setExpiresAt(Instant.now().plus(30, ChronoUnit.MINUTES));
+            resetToken.setUsed(false);
+            resetToken.setCreatedAt(Instant.now());
+            passwordResetTokenRepository.save(resetToken);
+
+            String resetLink = frontendUrl + "/reset-password?token=" + rawToken;
+            emailService.sendPasswordResetEmail(user.getEmail(), resetLink);
+        });
+    }
+
+    @Transactional
+    public void resetPassword(String rawToken, String newPassword) {
+        String tokenHash = hashToken(rawToken);
+
+        PasswordResetToken resetToken = passwordResetTokenRepository.findByTokenHash(tokenHash)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid or expired reset token"));
+
+        if (resetToken.isUsed() || resetToken.getExpiresAt().isBefore(Instant.now())) {
+            throw new IllegalArgumentException("Invalid or expired reset token");
+        }
+
+        User user = userRepository.findById(resetToken.getUserId())
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "User with id: " + resetToken.getUserId() + " not found"));
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        resetToken.setUsed(true);
+        passwordResetTokenRepository.save(resetToken);
+    }
+
+    private String generateSecureToken() {
+        byte[] randomBytes = new byte[32];
+        new SecureRandom().nextBytes(randomBytes);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes);
+    }
+
+    private String hashToken(String rawToken) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(rawToken.getBytes(StandardCharsets.UTF_8));
+            return HexFormat.of().formatHex(hash);
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("SHA-256 algorithm not available", e);
+        }
     }
 }

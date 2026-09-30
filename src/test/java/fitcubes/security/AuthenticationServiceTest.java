@@ -14,20 +14,27 @@ import static org.mockito.Mockito.when;
 import fitcubes.dto.user.UserLoginRequestDto;
 import fitcubes.dto.user.UserLoginResponseDto;
 import fitcubes.dto.user.UserRegistrationRequestDto;
+import fitcubes.exception.EntityNotFoundException;
 import fitcubes.exception.RegistrationException;
 import fitcubes.mapper.UserMapper;
 import fitcubes.model.user.Gender;
 import fitcubes.model.user.Goal;
+import fitcubes.model.user.PasswordResetToken;
 import fitcubes.model.user.Role;
 import fitcubes.model.user.RoleName;
 import fitcubes.model.user.User;
+import fitcubes.repository.PasswordResetTokenRepository;
 import fitcubes.repository.RoleRepository;
 import fitcubes.repository.UserRepository;
+import fitcubes.service.email.EmailService;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -35,6 +42,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class AuthenticationServiceTest {
@@ -60,6 +68,12 @@ class AuthenticationServiceTest {
     @Mock
     private TokenBlacklistService tokenBlacklistService;
 
+    @Mock
+    private PasswordResetTokenRepository passwordResetTokenRepository;
+
+    @Mock
+    private EmailService emailService;
+
     private AuthenticationService authenticationService;
 
     @BeforeEach
@@ -71,7 +85,10 @@ class AuthenticationServiceTest {
                 roleRepository,
                 userMapper,
                 authenticationManager,
-                tokenBlacklistService);
+                tokenBlacklistService,
+                passwordResetTokenRepository,
+                emailService);
+        ReflectionTestUtils.setField(authenticationService, "frontendUrl", "http://localhost:3000");
     }
 
     @Test
@@ -392,5 +409,152 @@ class AuthenticationServiceTest {
 
         // then
         verify(tokenBlacklistService, times(1)).blacklistToken("abc.def.ghi", 3600000L);
+    }
+
+    // ---------- forgotPassword ----------
+
+    @Test
+    @DisplayName("Should send reset email when user exists")
+    void forgotPassword_UserExists_SendsResetEmail() {
+        // given
+        User user = new User();
+        user.setId(1L);
+        user.setEmail("john@example.com");
+
+        when(userRepository.findByEmail("john@example.com")).thenReturn(Optional.of(user));
+
+        // when
+        authenticationService.forgotPassword("john@example.com");
+
+        // then
+        ArgumentCaptor<PasswordResetToken> tokenCaptor =
+                ArgumentCaptor.forClass(PasswordResetToken.class);
+        verify(passwordResetTokenRepository).save(tokenCaptor.capture());
+
+        PasswordResetToken savedToken = tokenCaptor.getValue();
+        assertThat(savedToken.getUserId()).isEqualTo(1L);
+        assertThat(savedToken.isUsed()).isFalse();
+        assertThat(savedToken.getExpiresAt()).isAfter(Instant.now());
+
+        verify(emailService).sendPasswordResetEmail(eq("john@example.com"), anyString());
+    }
+
+    @Test
+    @DisplayName("Should not send email or throw when user does not exist")
+    void forgotPassword_UserDoesNotExist_DoesNothingSilently() {
+        // given
+        when(userRepository.findByEmail("nobody@example.com")).thenReturn(Optional.empty());
+
+        // when / then
+        authenticationService.forgotPassword("nobody@example.com");
+
+        verifyNoInteractions(emailService);
+        verify(passwordResetTokenRepository, never()).save(any());
+    }
+
+    // ---------- resetPassword ----------
+
+    @Test
+    @DisplayName("Should reset password with valid token")
+    void resetPassword_ValidToken_UpdatesPassword() {
+        // given
+        User user = new User();
+        user.setId(1L);
+        user.setEmail("john@example.com");
+        user.setPassword("oldEncodedPassword");
+
+        PasswordResetToken resetToken = new PasswordResetToken();
+        resetToken.setUserId(1L);
+        resetToken.setUsed(false);
+        resetToken.setExpiresAt(Instant.now().plus(10, ChronoUnit.MINUTES));
+
+        when(passwordResetTokenRepository.findByTokenHash(anyString()))
+                .thenReturn(Optional.of(resetToken));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(passwordEncoder.encode("newPassword123")).thenReturn("newEncodedPassword");
+
+        // when
+        authenticationService.resetPassword("raw-token-value", "newPassword123");
+
+        // then
+        assertThat(user.getPassword()).isEqualTo("newEncodedPassword");
+        assertThat(resetToken.isUsed()).isTrue();
+        verify(userRepository).save(user);
+        verify(passwordResetTokenRepository).save(resetToken);
+    }
+
+    @Test
+    @DisplayName("Should throw exception when token does not exist")
+    void resetPassword_TokenNotFound_ThrowsIllegalArgumentException() {
+        // given
+        when(passwordResetTokenRepository.findByTokenHash(anyString()))
+                .thenReturn(Optional.empty());
+
+        // when / then
+        assertThatThrownBy(() -> authenticationService.resetPassword("bad-token", "newPassword123"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Invalid or expired reset token");
+
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Should throw exception when token is already used")
+    void resetPassword_TokenAlreadyUsed_ThrowsIllegalArgumentException() {
+        // given
+        PasswordResetToken resetToken = new PasswordResetToken();
+        resetToken.setUserId(1L);
+        resetToken.setUsed(true);
+        resetToken.setExpiresAt(Instant.now().plus(10, ChronoUnit.MINUTES));
+
+        when(passwordResetTokenRepository.findByTokenHash(anyString()))
+                .thenReturn(Optional.of(resetToken));
+
+        // when / then
+        assertThatThrownBy(() -> authenticationService.resetPassword("used-token", "newPassword123"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Invalid or expired reset token");
+
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Should throw exception when token is expired")
+    void resetPassword_TokenExpired_ThrowsIllegalArgumentException() {
+        // given
+        PasswordResetToken resetToken = new PasswordResetToken();
+        resetToken.setUserId(1L);
+        resetToken.setUsed(false);
+        resetToken.setExpiresAt(Instant.now().minus(10, ChronoUnit.MINUTES));
+
+        when(passwordResetTokenRepository.findByTokenHash(anyString()))
+                .thenReturn(Optional.of(resetToken));
+
+        // when / then
+        assertThatThrownBy(() -> authenticationService.resetPassword("expired-token", "newPassword123"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Invalid or expired reset token");
+
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Should throw exception when user for token no longer exists")
+    void resetPassword_UserNotFound_ThrowsEntityNotFoundException() {
+        // given
+        PasswordResetToken resetToken = new PasswordResetToken();
+        resetToken.setUserId(999L);
+        resetToken.setUsed(false);
+        resetToken.setExpiresAt(Instant.now().plus(10, ChronoUnit.MINUTES));
+
+        when(passwordResetTokenRepository.findByTokenHash(anyString()))
+                .thenReturn(Optional.of(resetToken));
+        when(userRepository.findById(999L)).thenReturn(Optional.empty());
+
+        // when / then
+        assertThatThrownBy(() -> authenticationService.resetPassword("some-token", "newPassword123"))
+                .isInstanceOf(EntityNotFoundException.class);
+
+        verify(userRepository, never()).save(any());
     }
 }

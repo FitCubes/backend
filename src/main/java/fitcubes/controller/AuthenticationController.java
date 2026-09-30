@@ -1,5 +1,7 @@
 package fitcubes.controller;
 
+import fitcubes.dto.user.ForgotPasswordRequestDto;
+import fitcubes.dto.user.ResetPasswordRequestDto;
 import fitcubes.dto.user.UserLoginRequestDto;
 import fitcubes.dto.user.UserLoginResponseDto;
 import fitcubes.dto.user.UserRegistrationRequestDto;
@@ -74,5 +76,33 @@ public class AuthenticationController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void logout(@RequestHeader("Authorization") String authHeader) {
         authenticationService.logout(authHeader);
+    }
+
+    @Operation(
+            summary = "Request password reset",
+            description = "Sends a password reset link to the provided email, "
+                    + "if an account with that email exists.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Request processed")
+            }
+    )
+    @PostMapping("/forgot-password")
+    @ResponseStatus(HttpStatus.OK)
+    public void forgotPassword(@RequestBody @Valid ForgotPasswordRequestDto requestDto) {
+        authenticationService.forgotPassword(requestDto.email());
+    }
+
+    @Operation(
+            summary = "Reset password",
+            description = "Resets the user's password using a valid reset token.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Password reset successfully"),
+                    @ApiResponse(responseCode = "400", description = "Invalid or expired token")
+            }
+    )
+    @PostMapping("/reset-password")
+    @ResponseStatus(HttpStatus.OK)
+    public void resetPassword(@RequestBody @Valid ResetPasswordRequestDto requestDto) {
+        authenticationService.resetPassword(requestDto.token(), requestDto.newPassword());
     }
 }
