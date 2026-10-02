@@ -37,6 +37,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -74,6 +76,12 @@ class AuthenticationServiceTest {
     @Mock
     private EmailService emailService;
 
+    @Mock
+    private CacheManager cacheManager;
+
+    @Mock
+    private Cache cache;
+
     private AuthenticationService authenticationService;
 
     @BeforeEach
@@ -84,6 +92,7 @@ class AuthenticationServiceTest {
                 passwordEncoder,
                 roleRepository,
                 userMapper,
+                cacheManager,
                 authenticationManager,
                 tokenBlacklistService,
                 passwordResetTokenRepository,
@@ -472,6 +481,7 @@ class AuthenticationServiceTest {
                 .thenReturn(Optional.of(resetToken));
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(passwordEncoder.encode("newPassword123")).thenReturn("newEncodedPassword");
+        when(cacheManager.getCache("users")).thenReturn(cache);
 
         // when
         authenticationService.resetPassword("raw-token-value", "newPassword123");
@@ -481,6 +491,35 @@ class AuthenticationServiceTest {
         assertThat(resetToken.isUsed()).isTrue();
         verify(userRepository).save(user);
         verify(passwordResetTokenRepository).save(resetToken);
+        verify(cache).evict("john@example.com");
+    }
+
+    @Test
+    @DisplayName("Should not fail when users cache is not configured")
+    void resetPassword_CacheNotConfigured_StillUpdatesPassword() {
+        // given
+        User user = new User();
+        user.setId(1L);
+        user.setEmail("john@example.com");
+        user.setPassword("oldEncodedPassword");
+
+        PasswordResetToken resetToken = new PasswordResetToken();
+        resetToken.setUserId(1L);
+        resetToken.setUsed(false);
+        resetToken.setExpiresAt(Instant.now().plus(10, ChronoUnit.MINUTES));
+
+        when(passwordResetTokenRepository.findByTokenHash(anyString()))
+                .thenReturn(Optional.of(resetToken));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(passwordEncoder.encode("newPassword123")).thenReturn("newEncodedPassword");
+        when(cacheManager.getCache("users")).thenReturn(null);
+
+        // when
+        authenticationService.resetPassword("raw-token-value", "newPassword123");
+
+        // then
+        assertThat(user.getPassword()).isEqualTo("newEncodedPassword");
+        verify(userRepository).save(user);
     }
 
     @Test
