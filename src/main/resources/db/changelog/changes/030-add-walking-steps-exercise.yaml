@@ -1,0 +1,30 @@
+databaseChangeLog:
+  - changeSet:
+      id: 029-add-walking-steps-exercise
+      author: senjars
+      changes:
+        - insert:
+            tableName: exercises
+            columns:
+              - column:
+                  name: name
+                  value: "Walking / Steps"
+              - column:
+                  name: category
+                  value: "CARDIO"
+              - column:
+                  name: primary_muscles
+                  value: "legs,cardio"
+              - column:
+                  name: met
+                  valueNumeric: 3.5
+              - column:
+                  name: unit
+                  value: "STEPS"
+              - column:
+                  name: calories_per_unit
+                  valueNumeric: 0.0300
+      rollback:
+        - delete:
+            tableName: exercises
+            where: name = 'Walking / Steps'

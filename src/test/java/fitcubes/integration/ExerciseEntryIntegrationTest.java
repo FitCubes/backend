@@ -15,6 +15,7 @@ import fitcubes.dto.exerciseentry.ExerciseEntryRequestDto;
 import fitcubes.dto.weightlog.WeightLogRequestDto;
 import fitcubes.model.exercise.Exercise;
 import fitcubes.model.exercise.ExerciseCategory;
+import fitcubes.model.exercise.ExerciseUnit;
 import fitcubes.model.exerciseentry.ExerciseEntry;
 import fitcubes.model.user.User;
 import fitcubes.model.weightlog.WeightLog;
@@ -88,6 +89,7 @@ class ExerciseEntryIntegrationTest {
         exercise.setCategory(ExerciseCategory.CARDIO);
         exercise.setPrimaryMuscles("Legs");
         exercise.setMet(BigDecimal.valueOf(met));
+        exercise.setUnit(ExerciseUnit.MINUTES);
         return exerciseRepository.save(exercise);
     }
 

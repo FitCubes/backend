@@ -34,4 +34,11 @@ public class Exercise {
 
     @Column(nullable = false)
     private BigDecimal met;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ExerciseUnit unit;
+
+    @Column(name = "calories_per_unit")
+    private BigDecimal caloriesPerUnit;
 }

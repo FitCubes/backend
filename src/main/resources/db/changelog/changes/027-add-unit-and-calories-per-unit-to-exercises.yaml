@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - changeSet:
+      id: 027-add-unit-and-calories-per-unit-to-exercises
+      author: senjars
+      changes:
+        - addColumn:
+            tableName: exercises
+            columns:
+              - column:
+                  name: unit
+                  type: VARCHAR(10)
+                  defaultValue: MINUTES
+                  constraints:
+                    nullable: false
+              - column:
+                  name: calories_per_unit
+                  type: DECIMAL(6,4)
+      rollback:
+        - dropColumn:
+            tableName: exercises
+            columnName: unit
+        - dropColumn:
+            tableName: exercises
+            columnName: calories_per_unit

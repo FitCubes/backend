@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import fitcubes.dto.exercise.ExerciseDto;
 import fitcubes.model.exercise.ExerciseCategory;
+import fitcubes.model.exercise.ExerciseUnit;
 import fitcubes.security.CustomAuthenticationEntryPoint;
 import fitcubes.security.JwtUtil;
 import fitcubes.security.TokenBlacklistService;
@@ -59,7 +60,8 @@ class ActivityControllerTest {
     @BeforeEach
     void setUp() {
         exerciseDto = new ExerciseDto(
-                EXERCISE_ID, "Running", ExerciseCategory.CARDIO, "Legs", BigDecimal.valueOf(8));
+                EXERCISE_ID, "Running", ExerciseCategory.CARDIO, "Legs", BigDecimal.valueOf(8),
+                ExerciseUnit.MINUTES, null);
     }
 
     private RequestPostProcessor asUser() {

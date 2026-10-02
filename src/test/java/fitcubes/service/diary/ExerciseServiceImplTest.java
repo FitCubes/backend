@@ -7,8 +7,9 @@ import static org.mockito.BDDMockito.given;
 import fitcubes.dto.exercise.ExerciseDto;
 import fitcubes.model.exercise.Exercise;
 import fitcubes.model.exercise.ExerciseCategory;
+import fitcubes.model.exercise.ExerciseUnit;
 import fitcubes.repository.ExerciseRepository;
-import fitcubes.service.exercise.impl.ExerciseServiceImpl;
+import fitcubes.service.exercise.ExerciseServiceImpl;
 import java.math.BigDecimal;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,6 +46,7 @@ class ExerciseServiceImplTest {
         exercise.setCategory(ExerciseCategory.CARDIO);
         exercise.setPrimaryMuscles("Legs");
         exercise.setMet(BigDecimal.valueOf(8));
+        exercise.setUnit(ExerciseUnit.MINUTES);
     }
 
     @Nested
@@ -67,6 +69,31 @@ class ExerciseServiceImplTest {
             assertThat(dto.category()).isEqualTo(ExerciseCategory.CARDIO);
             assertThat(dto.primaryMuscles()).isEqualTo("Legs");
             assertThat(dto.met()).isEqualByComparingTo(BigDecimal.valueOf(8));
+            assertThat(dto.unit()).isEqualTo(ExerciseUnit.MINUTES);
+            assertThat(dto.caloriesPerUnit()).isNull();
+        }
+
+        @Test
+        @DisplayName("getAllExercises_repsExercise_includesCaloriesPerUnit")
+        void getAllExercises_repsExercise_includesCaloriesPerUnit() {
+            Exercise pushUps = new Exercise();
+            pushUps.setId(2L);
+            pushUps.setName("Push-ups");
+            pushUps.setCategory(ExerciseCategory.STRENGTH);
+            pushUps.setPrimaryMuscles("Chest");
+            pushUps.setMet(BigDecimal.valueOf(3.8));
+            pushUps.setUnit(ExerciseUnit.REPS);
+            pushUps.setCaloriesPerUnit(BigDecimal.valueOf(0.4100));
+
+            Pageable pageable = PageRequest.of(0, 10);
+            Page<Exercise> exercisePage = new PageImpl<>(List.of(pushUps));
+            given(exerciseRepository.findAll(pageable)).willReturn(exercisePage);
+
+            Page<ExerciseDto> result = exerciseService.getAllExercises(pageable);
+
+            ExerciseDto dto = result.getContent().get(0);
+            assertThat(dto.unit()).isEqualTo(ExerciseUnit.REPS);
+            assertThat(dto.caloriesPerUnit()).isEqualByComparingTo(BigDecimal.valueOf(0.4100));
         }
 
         @Test
