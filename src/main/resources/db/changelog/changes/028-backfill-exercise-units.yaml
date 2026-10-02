@@ -1,0 +1,42 @@
+databaseChangeLog:
+  - changeSet:
+      id: 028-backfill-exercise-units
+      author: senjars
+      changes:
+        - sql:
+            sql: >
+              UPDATE exercises SET unit = 'REPS', calories_per_unit = 0.4100 WHERE LOWER(name) = LOWER('Push-ups');
+              UPDATE exercises SET unit = 'REPS', calories_per_unit = 0.3500 WHERE LOWER(name) = LOWER('Squats (bodyweight)');
+              UPDATE exercises SET unit = 'REPS', calories_per_unit = 0.8500 WHERE LOWER(name) = LOWER('Pull-ups');
+              UPDATE exercises SET unit = 'REPS', calories_per_unit = 0.3000 WHERE LOWER(name) = LOWER('Sit-ups / Crunches');
+              UPDATE exercises SET unit = 'REPS', calories_per_unit = 0.5000 WHERE LOWER(name) = LOWER('Burpees');
+              UPDATE exercises SET unit = 'REPS', calories_per_unit = 0.2142 WHERE LOWER(name) = LOWER('Jumping Jacks');
+              UPDATE exercises SET unit = 'REPS', calories_per_unit = 0.3800 WHERE LOWER(name) = LOWER('Lunges');
+              UPDATE exercises SET unit = 'REPS', calories_per_unit = 0.2827 WHERE LOWER(name) = LOWER('Mountain Climbers');
+              UPDATE exercises SET unit = 'REPS', calories_per_unit = 0.1409 WHERE LOWER(name) = LOWER('High Knees');
+              UPDATE exercises SET unit = 'REPS', calories_per_unit = 0.4500 WHERE LOWER(name) = LOWER('Diamond Push-ups');
+              UPDATE exercises SET unit = 'REPS', calories_per_unit = 0.4200 WHERE LOWER(name) = LOWER('Wide Push-ups');
+              UPDATE exercises SET unit = 'REPS', calories_per_unit = 0.4800 WHERE LOWER(name) = LOWER('Decline Push-ups');
+              UPDATE exercises SET unit = 'REPS', calories_per_unit = 0.5000 WHERE LOWER(name) = LOWER('Pike Push-ups');
+              UPDATE exercises SET unit = 'REPS', calories_per_unit = 0.4500 WHERE LOWER(name) = LOWER('Jump Squats');
+              UPDATE exercises SET unit = 'REPS', calories_per_unit = 0.4000 WHERE LOWER(name) = LOWER('Bulgarian Split Squats');
+              UPDATE exercises SET unit = 'REPS', calories_per_unit = 0.4200 WHERE LOWER(name) = LOWER('Tricep Dips');
+              UPDATE exercises SET unit = 'REPS', calories_per_unit = 0.3200 WHERE LOWER(name) = LOWER('Glute Bridges');
+              UPDATE exercises SET unit = 'REPS', calories_per_unit = 0.2000 WHERE LOWER(name) = LOWER('Calf Raises');
+              UPDATE exercises SET unit = 'REPS', calories_per_unit = 0.2500 WHERE LOWER(name) = LOWER('Oblique Twists');
+              UPDATE exercises SET unit = 'REPS', calories_per_unit = 0.3500 WHERE LOWER(name) = LOWER('Leg Raises');
+              UPDATE exercises SET unit = 'REPS', calories_per_unit = 0.3000 WHERE LOWER(name) = LOWER('Bicycle Crunches');
+              UPDATE exercises SET unit = 'REPS', calories_per_unit = 0.4500 WHERE LOWER(name) = LOWER('Box Jumps');
+              UPDATE exercises SET unit = 'REPS', calories_per_unit = 0.3800 WHERE LOWER(name) = LOWER('Walking Lunges');
+              UPDATE exercises SET unit = 'REPS', calories_per_unit = 0.4000 WHERE LOWER(name) = LOWER('Inchworms');
+              UPDATE exercises SET unit = 'REPS', calories_per_unit = 0.6500 WHERE LOWER(name) = LOWER('Kettlebell Swings');
+              UPDATE exercises SET unit = 'REPS', calories_per_unit = 0.6000 WHERE LOWER(name) = LOWER('Dumbbell Thrusters');
+              UPDATE exercises SET unit = 'REPS', calories_per_unit = 0.3000 WHERE LOWER(name) = LOWER('Downward Dog to Cobra');
+              UPDATE exercises SET unit = 'REPS', calories_per_unit = 0.6000 WHERE LOWER(name) = LOWER('Pistol Squats');
+              UPDATE exercises SET unit = 'REPS', calories_per_unit = 0.5500 WHERE LOWER(name) = LOWER('Clapping Push-ups');
+              UPDATE exercises SET unit = 'REPS', calories_per_unit = 0.3800 WHERE LOWER(name) = LOWER('Side Lunges');
+              UPDATE exercises SET unit = 'STEPS', calories_per_unit = 0.0300 WHERE LOWER(name) = LOWER('Walking / Steps');
+              UPDATE exercises SET unit = 'REPS', calories_per_unit = 0.5000 WHERE LOWER(name) = LOWER('Tuck Jumps');
+      rollback:
+        - sql:
+            sql: UPDATE exercises SET unit = 'MINUTES', calories_per_unit = NULL;

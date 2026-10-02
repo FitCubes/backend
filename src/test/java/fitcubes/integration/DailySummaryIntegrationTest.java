@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fitcubes.model.exercise.Exercise;
 import fitcubes.model.exercise.ExerciseCategory;
+import fitcubes.model.exercise.ExerciseUnit;
 import fitcubes.model.exerciseentry.ExerciseEntry;
 import fitcubes.model.foodentry.FoodEntry;
 import fitcubes.model.foodentry.MealType;
@@ -111,6 +112,7 @@ class DailySummaryIntegrationTest {
         exercise.setCategory(ExerciseCategory.CARDIO);
         exercise.setPrimaryMuscles("Legs");
         exercise.setMet(BigDecimal.valueOf(8));
+        exercise.setUnit(ExerciseUnit.MINUTES);
         return exerciseRepository.save(exercise);
     }
 

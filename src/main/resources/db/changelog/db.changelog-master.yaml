@@ -51,3 +51,11 @@ databaseChangeLog:
       file: db/changelog/changes/025-repopulate-products.yaml
   - include:
       file: db/changelog/changes/026-create-password-reset-tokens-table.yaml
+  - include:
+      file: db/changelog/changes/027-add-unit-and-calories-per-unit-to-exercises.yaml
+  - include:
+      file: db/changelog/changes/028-backfill-exercise-units.yaml
+  - include:
+      file: db/changelog/changes/029-add-exercise-unit-consistency-check.yaml
+  - include:
+      file: db/changelog/changes/030-add-walking-steps-exercise.yaml
