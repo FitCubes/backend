@@ -10,6 +10,8 @@ public record DiaryFoodEntryDto(
         BigDecimal carbs,
         BigDecimal fats,
         BigDecimal weightGrams,
-        String mealType
+        String mealType,
+        Long productId,
+        Long recipeId
 ) {
 }

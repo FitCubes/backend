@@ -103,16 +103,8 @@ public class ProductControllerTest {
                 3.0
         );
 
-        productDto = new ProductDto(
-                PRODUCT_ID,
-                "Rice",
-                category,
-                130.0,
-                0.3,
-                28.0,
-                2.7,
-                10.8
-        );
+        productDto = new ProductDto(PRODUCT_ID, "Rice", category,
+                130.0, 0.3, 28.0, 2.7, 10.8, false);
 
         user = new User();
         user.setId(USER_ID);

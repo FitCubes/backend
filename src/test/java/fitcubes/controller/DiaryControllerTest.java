@@ -90,7 +90,8 @@ class DiaryControllerTest {
     void getDiary_returnsAggregatedEntries() throws Exception {
         DiaryFoodEntryDto food = new DiaryFoodEntryDto(
                 1L, "Chicken Breast", BigDecimal.valueOf(165), BigDecimal.valueOf(31),
-                BigDecimal.ZERO, BigDecimal.valueOf(3.6), BigDecimal.valueOf(100), "lunch"
+                BigDecimal.ZERO, BigDecimal.valueOf(3.6), BigDecimal.valueOf(100),
+                "lunch", 42L, null
         );
         DiaryExerciseEntryDto exercise = new DiaryExerciseEntryDto(
                 2L, "Running", BigDecimal.valueOf(320), BigDecimal.valueOf(30)
