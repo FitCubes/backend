@@ -36,12 +36,15 @@ public class WeightProgressServiceImpl implements WeightProgressService {
                 .map(WeightLog::getWeight)
                 .orElseGet(() -> fallbackWeight(user));
 
-        BigDecimal targetWeight = BigDecimal.valueOf(user.getTargetWeight());
+        BigDecimal targetWeight = user.getTargetWeight() != null
+                ? BigDecimal.valueOf(user.getTargetWeight())
+                : null;
 
         BigDecimal totalChange = currentWeight.subtract(startingWeight)
                 .setScale(SCALE, RoundingMode.HALF_UP);
-        BigDecimal remainingToGoal = currentWeight.subtract(targetWeight)
-                .setScale(SCALE, RoundingMode.HALF_UP);
+        BigDecimal remainingToGoal = targetWeight != null
+                ? currentWeight.subtract(targetWeight).setScale(SCALE, RoundingMode.HALF_UP)
+                : null;
 
         return new WeightProgressResponseDto(
                 startingWeight, currentWeight, targetWeight, totalChange, remainingToGoal);

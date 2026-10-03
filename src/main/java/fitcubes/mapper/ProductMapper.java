@@ -36,5 +36,6 @@ public interface ProductMapper {
     @Mapping(source = "protein", target = "proteinPer100g")
     @Mapping(source = "carbohydrates", target = "carbsPer100g")
     @Mapping(source = "fat", target = "fatsPer100g")
+    @Mapping(target = "isCustom", expression = "java(product.getUser() != null)")
     ProductDto toDto(Product product);
 }

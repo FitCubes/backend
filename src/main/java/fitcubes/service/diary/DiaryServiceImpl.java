@@ -53,7 +53,9 @@ public class DiaryServiceImpl implements DiaryService {
                 entry.carbs(),
                 entry.fat(),
                 entry.quantity(),
-                entry.mealType().name().toLowerCase()
+                entry.mealType().name().toLowerCase(),
+                entry.productId(),
+                entry.recipeId()
         );
     }
 

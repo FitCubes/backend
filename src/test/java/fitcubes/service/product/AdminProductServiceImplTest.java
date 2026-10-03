@@ -65,7 +65,8 @@ public class AdminProductServiceImplTest {
 
         createProductDto = new CreateProductDto(PRODUCT_NAME, CATEGORY, 100.0, 2.0, 15.0, 5.0);
         updateProductDto = new UpdateProductDto(PRODUCT_NAME, CATEGORY, 120.0, 3.0, 18.0, 6.0);
-        productDto = new ProductDto(PRODUCT_ID, PRODUCT_NAME, CATEGORY, 100.0, 2.0, 15.0, 5.0, 20.0);
+        productDto = new ProductDto(1L, "Chicken", ProductCategory.MEAT_AND_POULTRY,
+                165.0, 3.6, 0.0, 31.0, 124.0, false);
     }
 
     private User createUser(Long id) {

@@ -51,7 +51,8 @@ public class DiaryController {
         return new DiaryFoodEntryDto(
                 saved.id(), saved.nameSnapshot(), saved.calories(), saved.protein(),
                 saved.carbs(), saved.fat(), saved.quantity(),
-                saved.mealType().name().toLowerCase()
+                saved.mealType().name().toLowerCase(),
+                saved.productId(), saved.recipeId()
         );
     }
 
